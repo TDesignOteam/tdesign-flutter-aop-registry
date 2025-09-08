@@ -18,7 +18,7 @@ Flutter AOP实现方式是对编译时抽象语法树(AST)进行操作，详见[
 ### 1. 标准化集成，向FlutterSDK打入 [「git补丁」](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/tree/main/patch_flutter)。
 ```
 // 在FlutterSDK目录下，请应用对应flutter版本补丁
-git apply aop_market/patch_flutter/3.24.0~infinity.patch
+git apply aop_market/patch_flutter/3.35~infinity.patch
 
 // 删除SDK/bin/cache/flutter_tools.stamp，使修改生效。
 rm ./bin/cache/flutter_tools.stamp
