@@ -92,7 +92,7 @@ AOPRegistry:
 
 ### Q2：遇到了不兼容的Flutter版本？
 最低支持Flutter 2.2.0，更低未支持主要是考虑到版本太旧、适配非空安全较麻烦。<br/>
-最高已验证Flutter 3.29.x，不排除Flutter更新引起AOPRegistry异常的可能，请联系开发团队解决。
+最高见[changedLog](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/blob/main/CHANGELOG.md)，不排除Flutter更新引起AOPRegistry异常的可能，请联系开发团队解决。
 
 所有Flutter版本集成方式是一致的。
 
