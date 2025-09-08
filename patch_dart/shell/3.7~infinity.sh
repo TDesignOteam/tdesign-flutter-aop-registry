@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+  sed -i "" "s/import 'package:kernel\/ast.dart';/import 'package:kernel\/ast.dart'; import 'package:vm\/aop.dart';/g" $1
+  sed -i "" "s/runBuildTransformations();/runBuildTransformations(); AOPMarket.transformersAfterModular.forEach((transformer) {transformer.transform(component!);});/g" $1
+  sed -i "" "s/void runBuildTransformations() {/void runBuildTransformations() { AOPMarket.transformers.forEach((transformer) {transformer.transform(component!);});/g" $1
+  sed -i "" "s/backendTarget.performModularTransformationsOnLibraries(/AOPMarket.transformersBeforeModular.forEach((transformer) {transformer.transform(component!);}); backendTarget.performModularTransformationsOnLibraries(/g" $1
+else
+  sed -i "s/import 'package:kernel\/ast.dart';/import 'package:kernel\/ast.dart'; import 'package:vm\/aop.dart';/g" $1
+  sed -i "s/runBuildTransformations();/runBuildTransformations(); AOPMarket.transformersAfterModular.forEach((transformer) {transformer.transform(component!);});/g" $1
+  sed -i "s/void runBuildTransformations() {/void runBuildTransformations() { AOPMarket.transformers.forEach((transformer) {transformer.transform(component!);});/g" $1
+  sed -i "s/backendTarget.performModularTransformationsOnLibraries(/AOPMarket.transformersBeforeModular.forEach((transformer) {transformer.transform(component!);}); backendTarget.performModularTransformationsOnLibraries(/g" $1
+fi
+

@@ -1,0 +1,71 @@
+From 8536914e3f445133fb714ebabb0c163477893c78 Mon Sep 17 00:00:00 2001
+From: Skylerpfli <skylerpfli@tencent.com>
+Date: Sat, 10 Aug 2024 17:33:35 +0800
+Subject: [PATCH] 3
+
+---
+ pkg/vm/lib/aop.dart | 52 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 pkg/vm/lib/aop.dart
+
+diff --git a/pkg/vm/lib/aop.dart b/pkg/vm/lib/aop.dart
+new file mode 100644
+index 00000000000..38ce287e333
+--- /dev/null
++++ b/pkg/vm/lib/aop.dart
+@@ -0,0 +1,52 @@
++import 'package:kernel/ast.dart' show Component;
++
++class AOPMarket {
++  /// before performPreConstantEvaluationTransformations
++  static List<ASTTransformer> _transformers = [];
++
++  static List<ASTTransformer> get transformers => [..._transformers];
++
++  static void registerTransformers(ASTTransformer transformer) {
++    if (!_transformers.contains(transformer)) {
++      _transformers.add(transformer);
++    }
++  }
++
++  static bool unRegisterTransformers(ASTTransformer transformer) {
++    return _transformers.remove(transformer);
++  }
++
++  /// before performModularTransformationsOnLibraries
++  static List<ASTTransformer> _transformersBeforeModular = [];
++
++  static List<ASTTransformer> get transformersBeforeModular => [..._transformersBeforeModular];
++
++  static void registerTransformersBeforeModular(ASTTransformer transformer) {
++    if (!_transformersBeforeModular.contains(transformer)) {
++      _transformersBeforeModular.add(transformer);
++    }
++  }
++
++  static bool unRegisterTransformersBeforeModular(ASTTransformer transformer) {
++    return _transformersBeforeModular.remove(transformer);
++  }
++
++  /// after performModularTransformationsOnLibraries
++  static List<ASTTransformer> _transformersAfterModular = [];
++
++  static List<ASTTransformer> get transformersAfterModular => [..._transformersAfterModular];
++
++  static void registerTransformersAfterModular(ASTTransformer transformer) {
++    if (!_transformersAfterModular.contains(transformer)) {
++      _transformersAfterModular.add(transformer);
++    }
++  }
++
++  static bool unRegisterTransformersAfterModular(ASTTransformer transformer) {
++    return _transformersAfterModular.remove(transformer);
++  }
++}
++
++abstract class ASTTransformer {
++  void transform(Component component);
++}
+-- 
+2.37.1 (Apple Git-137.1)
+

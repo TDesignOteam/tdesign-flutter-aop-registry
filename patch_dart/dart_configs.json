@@ -1,0 +1,309 @@
+{
+  "3.7.0~infinity": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/3.7~infinity.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/shelf.git": [
+          {
+            "package": "shelf",
+            "path": "pkgs/shelf"
+          }
+        ],
+        "https://dart.googlesource.com/http.git": [
+          {
+            "package": "http",
+            "path": "pkgs/http"
+          }
+        ],
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components",
+        "webdev",
+        "webdriver",
+        "webkit_inspection_protocol",
+        "web_socket_channel",
+        "tools",
+        "ecosystem",
+        "leak_tracker",
+        "native",
+        "material_color_utilities",
+        "dart_style",
+        "web",
+        "core",
+        "i18n",
+        "dartdev",
+        "ai"
+      ]
+    }
+  },
+  "3.1.0~3.7.0": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/2.14~3.7.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/shelf.git": [
+          {
+            "package": "shelf",
+            "path": "pkgs/shelf"
+          }
+        ],
+        "https://dart.googlesource.com/http.git": [
+          {
+            "package": "http",
+            "path": "pkgs/http"
+          }
+        ],
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components",
+        "webdev",
+        "webdriver",
+        "webkit_inspection_protocol",
+        "web_socket_channel",
+        "tools",
+        "ecosystem",
+        "leak_tracker",
+        "native",
+        "material_color_utilities",
+        "dart_style",
+        "web",
+        "core"
+      ]
+    }
+  },
+  "2.18.0~3.1.0": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/2.14~3.7.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/shelf.git": [
+          {
+            "package": "shelf",
+            "path": "pkgs/shelf"
+          }
+        ],
+        "https://dart.googlesource.com/http.git": [
+          {
+            "package": "http",
+            "path": "pkgs/http"
+          }
+        ],
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components",
+        "webdev",
+        "webdriver",
+        "webkit_inspection_protocol",
+        "web_socket_channel",
+        "tools",
+        "dart_style"
+      ]
+    }
+  },
+  "2.17.0~2.18.0": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/2.14~3.7.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/webdev.git": [
+          {
+            "package": "webdev",
+            "path": "webdev"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components",
+        "webdev",
+        "webdriver",
+        "webkit_inspection_protocol",
+        "web_socket_channel"
+      ]
+    }
+  },
+  "2.14~2.17.0": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/2.14~3.7.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/webdev.git": [
+          {
+            "package": "webdev",
+            "path": "webdev"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components"
+      ]
+    }
+  },
+  "2.13~2.14": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/2.13~2.14.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components"
+      ]
+    }
+  }
+}
