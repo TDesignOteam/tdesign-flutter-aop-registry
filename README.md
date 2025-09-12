@@ -106,4 +106,4 @@ AOPRegistry:
 <img width="800" alt="image" src="https://github.com/user-attachments/assets/31d61a50-f299-4313-84f0-c6c5c5d82d44" />
 
 ### Q4: 原理、和AspectD等方案的关系
-见https://juejin.cn/post/7549000112987832362
+https://juejin.cn/post/7549000112987832362
