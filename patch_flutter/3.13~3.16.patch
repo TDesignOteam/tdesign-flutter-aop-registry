@@ -512,13 +512,64 @@ index 00000000000..9075ffd880e
 +    throw AOPError('获取dart工程失败！');
 +  }
 +
++  // 查找 git 可执行文件路径
++  String? _findGitExecutable() {
++    // 1. 尝试从环境变量获取
++    final String? gitFromEnv = globals.platform.environment['GIT_EXEC_PATH'];
++    if (gitFromEnv != null && File(gitFromEnv).existsSync()) {
++      return gitFromEnv;
++    }
++
++    // 2. 尝试使用 which/where 命令查找
++    try {
++      final String whichCommand = globals.platform.isWindows ? 'where' : 'which';
++      final ProcessResult result = globals.processManager.runSync(<String>[whichCommand, 'git']);
++      if (result.exitCode == 0) {
++        final String gitPath = (result.stdout as String).trim().split('\n').first;
++        if (gitPath.isNotEmpty && File(gitPath).existsSync()) {
++          return gitPath;
++        }
++      }
++    } catch (e) {
++      Logger.w('Failed to find git using which/where: $e', tag: _tag);
++    }
++
++    // 3. 尝试常见路径
++    final List<String> commonPaths = <String>[
++      '/usr/bin/git',
++      '/usr/local/bin/git',
++      '/opt/homebrew/bin/git',
++      '/bin/git',
++      'C:\\Program Files\\Git\\bin\\git.exe',
++      'C:\\Program Files (x86)\\Git\\bin\\git.exe',
++    ];
++
++    for (final String path in commonPaths) {
++      if (File(path).existsSync()) {
++        return path;
++      }
++    }
++
++    // 4. 最后尝试直接使用 'git'，依赖系统 PATH
++    return 'git';
++  }
++
 +  // 运行命令，异常抛出
 +  bool _runGit(String projectPath, String command, String errorTips, {bool throwError = true}) {
 +    return _runGitByList(projectPath, command.split(' '), errorTips, throwError: throwError);
 +  }
 +
 +  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
-+    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
++    // 智能查找 git 可执行文件
++    final String? gitExecutable = _findGitExecutable();
++    final List<String> finalCommand = <String>[
++      gitExecutable ?? 'git',
++      ...command.sublist(1), // 跳过原命令中的 'git'
++    ];
++
++    Logger.d('Running git command: ${finalCommand.join(' ')} in $projectPath', tag: _tag);
++
++    final ProcessResult processResult = globals.processManager.runSync(finalCommand, workingDirectory: projectPath);
 +    if (processResult.exitCode == processResultOK) {
 +      return true;
 +    }
