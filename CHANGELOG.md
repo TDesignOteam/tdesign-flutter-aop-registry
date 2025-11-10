@@ -1,11 +1,11 @@
 ## flutterPatch 1.1.4
-1. 修正Flutter 3.32.0-3.34.x版本范围支持（重命名3.35~infinity.patch为3.32~infinity.patch）
+1. 新增3.32~3.35.patch补丁，修正Flutter 3.32.0-3.34.x版本支持
 
 ## AOPRegistry 1.1.4
 1. 兼容Flutter 3.35及以上版本使用
 
 ## flutterPatch 1.1.3
-1. 兼容Flutter 3.32及以上版本使用（实际3.32~infinity补丁）
+1. 兼容Flutter 3.35及以上版本使用
 2. 从flutter3.13版本开始，支持解析dart dev版本
 
 ## AOPRegistry 1.1.3
