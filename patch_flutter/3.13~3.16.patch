@@ -232,7 +232,7 @@ new file mode 100644
 index 00000000000..9075ffd880e
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1031 @@
+@@ -0,0 +1,1082 @@
 +import 'dart:convert';
 +import 'dart:io';
 +

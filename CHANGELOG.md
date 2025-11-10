@@ -1,5 +1,5 @@
 ## flutterPatch 1.1.4
-1. 新增3.32~3.35.patch补丁，修正Flutter 3.32.0-3.34.x版本支持
+1. 修正所有补丁文件的行数计数错误（pub_interceptor.dart的@@ header）
 
 ## AOPRegistry 1.1.4
 1. 兼容Flutter 3.35及以上版本使用
