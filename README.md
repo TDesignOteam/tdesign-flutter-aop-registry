@@ -16,13 +16,22 @@ Flutter AOP实现方式是对编译时抽象语法树(AST)进行操作，详见[
 
 ## 快速上手
 ### 1. 标准化集成，向FlutterSDK打入 [「git补丁」](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/tree/main/patch_flutter)。
+
+**💡 提示**: 在应用补丁前，可使用验证工具检查补丁文件完整性：
+```bash
+// 验证补丁文件（可选但推荐）
+python3 validate_patch.py patch_flutter/3.35~infinity.patch
 ```
+
+```bash
 // 在FlutterSDK目录下，请应用对应flutter版本补丁
 git apply aop_market/patch_flutter/3.35~infinity.patch
 
 // 删除SDK/bin/cache/flutter_tools.stamp，使修改生效。
 rm ./bin/cache/flutter_tools.stamp
 ```
+
+**📖 详细文档**: 如遇到问题，请参考 [PATCH_VERIFICATION.md](./PATCH_VERIFICATION.md) 获取完整的应用和故障排查指南。
 
 ### 2. 业务项目：加入AOP能力
 a. 拷贝[example中aop_tools（插桩工程）](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/tree/main/_example/aop_tools)到项目根目录下。
@@ -107,3 +116,31 @@ AOPRegistry:
 
 ### Q4: 原理、和AspectD等方案的关系
 https://juejin.cn/post/7549000112987832362
+
+### Q5: 补丁应用失败怎么办？
+
+如果在应用补丁时遇到编译错误：
+
+1. **验证补丁完整性**
+   ```bash
+   python3 validate_patch.py patch_flutter/你使用的版本.patch
+   ```
+
+2. **清除Flutter缓存**
+   ```bash
+   rm -rf $FLUTTER_SDK/bin/cache
+   rm $FLUTTER_SDK/bin/cache/flutter_tools.stamp
+   ```
+
+3. **重新下载补丁**
+   
+   确保从主仓库下载最新版本的补丁文件
+
+4. **查看详细文档**
+   
+   参考 [PATCH_VERIFICATION.md](./PATCH_VERIFICATION.md) 获取完整的故障排查指南
+
+常见错误及解决方案：
+- `DependenciesType enum` 错误 → 补丁文件损坏，重新下载
+- `_normalYaml not defined` 错误 → 补丁未完全应用，检查git apply输出
+- `Encoding vs Encoding?` 类型错误 → 使用了错误版本的补丁，确认Flutter版本对应关系
