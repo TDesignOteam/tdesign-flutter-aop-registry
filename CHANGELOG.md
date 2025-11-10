@@ -1,3 +1,6 @@
+## flutterPatch 1.1.5
+1. 新增3.32~3.35.patch补丁文件，支持Flutter 3.32.0-3.34.x版本
+
 ## flutterPatch 1.1.4
 1. 修正所有补丁文件的行数计数错误（pub_interceptor.dart的@@ header）
 
