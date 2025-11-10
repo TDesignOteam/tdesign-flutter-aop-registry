@@ -31,8 +31,6 @@ git apply aop_market/patch_flutter/3.35~infinity.patch
 rm ./bin/cache/flutter_tools.stamp
 ```
 
-**📖 详细文档**: 如遇到问题，请参考 [PATCH_VERIFICATION.md](./PATCH_VERIFICATION.md) 获取完整的应用和故障排查指南。
-
 ### 2. 业务项目：加入AOP能力
 a. 拷贝[example中aop_tools（插桩工程）](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/tree/main/_example/aop_tools)到项目根目录下。
 
@@ -135,10 +133,6 @@ https://juejin.cn/post/7549000112987832362
 3. **重新下载补丁**
    
    确保从主仓库下载最新版本的补丁文件
-
-4. **查看详细文档**
-   
-   参考 [PATCH_VERIFICATION.md](./PATCH_VERIFICATION.md) 获取完整的故障排查指南
 
 常见错误及解决方案：
 - `DependenciesType enum` 错误 → 补丁文件损坏，重新下载
