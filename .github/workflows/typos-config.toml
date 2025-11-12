@@ -1,0 +1,7 @@
+default.check-filename = true
+
+[default.extend-words]
+
+
+[files]
+extend-exclude = ["Base.lproj","Runner.xcodeproj","patch_flutter"]
