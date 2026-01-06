@@ -536,21 +536,7 @@ index 00000000000..6a40cc65ed5
 +  }
 +
 +  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
-+    ProcessResult processResult;
-+    try {
-+      processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
-+    } on ProcessException catch (_) {
-+      // 兼容 CI 环境：若抛出异常且是 git 命令，尝试使用 /usr/bin/git
-+      if (!Platform.isWindows && command.isNotEmpty && command.first == 'git') {
-+        processResult = globals.processManager.runSync(<String>['/usr/bin/git', ...command.sublist(1)], workingDirectory: projectPath);
-+      } else {
-+        rethrow;
-+      }
-+    }
-+    // 兼容 CI 环境：若 git 命令失败且非 Windows 尝试使用 /usr/bin/git
-+    if (processResult.exitCode != processResultOK && !Platform.isWindows && command.isNotEmpty && command.first == 'git') {
-+      processResult = globals.processManager.runSync(<String>['/usr/bin/git', ...command.sublist(1)], workingDirectory: projectPath);
-+    }
++    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
 +    if (processResult.exitCode == processResultOK) {
 +      return true;
 +    }
@@ -1087,7 +1073,7 @@ index 00000000000..6a40cc65ed5
 +      }) {
 +    bool dependenciesChanged = false;
 +    if (yamlConfigs[yamlEnvironment] is Map) {
-+      yamlConfigs[yamlEnvironment] = Map<dynamic, dynamic>.fromEntries((yamlConfigs[yamlEnvironment] as Map<dynamic, dynamic>).entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) => MapEntry<dynamic, dynamic>(entry.key, '\"${entry.value}\"')));
++      yamlConfigs[yamlEnvironment] = (yamlConfigs[yamlEnvironment] as Map<dynamic, dynamic>).map<dynamic, dynamic>((dynamic key, dynamic value) => MapEntry<dynamic, dynamic>(key, '\"$value\"'));
 +    }
 +
 +    // 过滤AOP依赖与dart不一致的依赖
@@ -1300,7 +1286,9 @@ index 00000000000..6a40cc65ed5
 +// yamlNode转化为普通结构
 +dynamic _normalYaml(dynamic yamlNode) {
 +  if (yamlNode is YamlMap) {
-+    return Map<dynamic, dynamic>.fromEntries(yamlNode.entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) => MapEntry<dynamic, dynamic>(_normalYaml(entry.key), _normalYaml(entry.value))));
++    return Map<dynamic, dynamic>.from(yamlNode.map<dynamic, dynamic>((dynamic key, dynamic value) {
++      return MapEntry<dynamic, dynamic>(_normalYaml(key), _normalYaml(value));
++    }));
 +  }
 +
 +  if (yamlNode is YamlList) {
@@ -1791,18 +1779,11 @@ index 00000000000..14ee069b7b5
 +
 +// flutter版本
 +String get flutterVersion => () {
-+      ProcessResult result = globals.processManager.runSync(
++      final String frameworkRevision = (globals.processManager.runSync(
 +        <String>['git', '-c', 'log.showSignature=false', 'log', '-n', '1', '--pretty=format:%H'],
 +        workingDirectory: Cache.flutterRoot,
-+      );
-+      // 兼容 CI 环境：若 git 命令失败则尝试使用绝对路径
-+      if (result.exitCode != 0 && !Platform.isWindows) {
-+        result = globals.processManager.runSync(
-+          <String>['/usr/bin/git', '-c', 'log.showSignature=false', 'log', '-n', '1', '--pretty=format:%H'],
-+          workingDirectory: Cache.flutterRoot,
-+        );
-+      }
-+      final String frameworkRevision = (result.stdout as String).trim();
++      ).stdout as String)
++          .trim();
 +
 +      final GitTagVersion gitTagVersion = GitTagVersion.determine(globals.processUtils, globals.platform, workingDirectory: Cache.flutterRoot, gitRef: frameworkRevision);
 +      return '${gitTagVersion.x}.${gitTagVersion.y}.${gitTagVersion.z}';

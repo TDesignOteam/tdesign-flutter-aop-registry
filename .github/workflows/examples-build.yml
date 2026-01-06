@@ -22,19 +22,33 @@ jobs:
           flutter-version: 3.24.0
           channel: stable
 
+      - name: Clean Flutter SDK completely
+        run: |
+          cd $FLUTTER_ROOT
+          echo "=== Full cleanup ==="
+          git restore .
+          git clean -fdx
+          git reset --hard HEAD
+          rm -rf bin/cache/ .dart_tool/ .packages pubspec.lock
+          echo "=== Remove compiled files ==="
+          find . -name "*.dart.snapshot" -delete 2>/dev/null || true
+          find . -name "*.o" -delete 2>/dev/null || true
+          echo "Cleanup completed"
+
       - name: Apply AOP Registry patch
         run: |
           cd $FLUTTER_ROOT
-          git restore .
-          git clean -fd
-          rm -rf bin/cache/ .dart_tool/ .packages
+          echo "=== Verifying patch format ==="
+          file $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
           echo "=== Checking patch compatibility ==="
-          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
+          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Pre-check failed"; cat $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch | tail -50)
           echo "=== Applying patch with -p1 ==="
-          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
-          echo "AOP Registry patch applied"
-          echo "=== Patch content check ==="
-          grep -n "_normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -5 || true
+          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Patch apply failed"; exit 1)
+          echo "AOP Registry patch applied successfully"
+          echo "=== Verify patched files exist ==="
+          ls -la packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+          echo "=== Verify _normalYaml function ==="
+          grep -A 10 "dynamic _normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -15
 
       - name: Build _example APK
         run: |
@@ -62,19 +76,33 @@ jobs:
           flutter-version: 3.32.0
           channel: stable
 
+      - name: Clean Flutter SDK completely
+        run: |
+          cd $FLUTTER_ROOT
+          echo "=== Full cleanup ==="
+          git restore .
+          git clean -fdx
+          git reset --hard HEAD
+          rm -rf bin/cache/ .dart_tool/ .packages pubspec.lock
+          echo "=== Remove compiled files ==="
+          find . -name "*.dart.snapshot" -delete 2>/dev/null || true
+          find . -name "*.o" -delete 2>/dev/null || true
+          echo "Cleanup completed"
+
       - name: Apply AOP Registry patch
         run: |
           cd $FLUTTER_ROOT
-          git restore .
-          git clean -fd
-          rm -rf bin/cache/ .dart_tool/ .packages
+          echo "=== Verifying patch format ==="
+          file $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
           echo "=== Checking patch compatibility ==="
-          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
+          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Pre-check failed"; cat $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch | tail -50)
           echo "=== Applying patch with -p1 ==="
-          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
-          echo "AOP Registry patch applied"
-          echo "=== Patch content check ==="
-          grep -n "_normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -5 || true
+          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Patch apply failed"; exit 1)
+          echo "AOP Registry patch applied successfully"
+          echo "=== Verify patched files exist ==="
+          ls -la packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+          echo "=== Verify _normalYaml function ==="
+          grep -A 10 "dynamic _normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -15
 
       - name: Build _example2 APK
         run: |
