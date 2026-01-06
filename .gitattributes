@@ -1,0 +1,15 @@
+# 补丁文件必须使用LF换行符，禁用自动转换
+*.patch -text eol=lf
+patch_flutter/*.patch -text eol=lf
+
+# Dart/Flutter文件
+*.dart text eol=lf
+pubspec.yaml text eol=lf
+pubspec.lock text eol=lf
+
+# 脚本文件
+*.sh text eol=lf
+
+# 文档
+*.md text eol=lf
+*.txt text eol=lf

@@ -38,17 +38,36 @@ jobs:
       - name: Apply AOP Registry patch
         run: |
           cd $FLUTTER_ROOT
-          echo "=== Verifying patch format ==="
-          file $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
+          PATCH_FILE=$GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
+          
+          echo "=== Patch file diagnostics ==="
+          ls -la $PATCH_FILE
+          echo "File size: $(stat -f%z $PATCH_FILE 2>/dev/null || stat -c%s $PATCH_FILE 2>/dev/null) bytes"
+          echo "Last 5 lines:"
+          tail -5 $PATCH_FILE
+          echo ""
+          
           echo "=== Checking patch compatibility ==="
-          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Pre-check failed"; cat $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch | tail -50)
+          git apply --check -p1 $PATCH_FILE 2>&1 | head -30 || (echo "Pre-check failed with exit code $?"; cat $PATCH_FILE | tail -100; exit 1)
+          
           echo "=== Applying patch with -p1 ==="
-          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Patch apply failed"; exit 1)
-          echo "AOP Registry patch applied successfully"
+          git apply -p1 $PATCH_FILE 2>&1 | head -20 || (echo "Patch apply failed with exit code $?"; exit 1)
+          
           echo "=== Verify patched files exist ==="
           ls -la packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+          
           echo "=== Verify _normalYaml function ==="
           grep -A 10 "dynamic _normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -15
+          
+          echo "=== Verify file is not truncated ==="
+          TOTAL_LINES=$(wc -l < packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart)
+          echo "Total lines in pub_interceptor.dart: $TOTAL_LINES"
+          if [ $TOTAL_LINES -lt 1000 ]; then
+            echo "ERROR: File appears to be truncated! Expected > 1000 lines"
+            tail -50 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+            exit 1
+          fi
+          echo "File integrity verified"
 
       - name: Build _example APK
         run: |
@@ -92,17 +111,36 @@ jobs:
       - name: Apply AOP Registry patch
         run: |
           cd $FLUTTER_ROOT
-          echo "=== Verifying patch format ==="
-          file $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
+          PATCH_FILE=$GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
+          
+          echo "=== Patch file diagnostics ==="
+          ls -la $PATCH_FILE
+          echo "File size: $(stat -f%z $PATCH_FILE 2>/dev/null || stat -c%s $PATCH_FILE 2>/dev/null) bytes"
+          echo "Last 5 lines:"
+          tail -5 $PATCH_FILE
+          echo ""
+          
           echo "=== Checking patch compatibility ==="
-          git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Pre-check failed"; cat $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch | tail -50)
+          git apply --check -p1 $PATCH_FILE 2>&1 | head -30 || (echo "Pre-check failed with exit code $?"; cat $PATCH_FILE | tail -100; exit 1)
+          
           echo "=== Applying patch with -p1 ==="
-          git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -20 || (echo "Patch apply failed"; exit 1)
-          echo "AOP Registry patch applied successfully"
+          git apply -p1 $PATCH_FILE 2>&1 | head -20 || (echo "Patch apply failed with exit code $?"; exit 1)
+          
           echo "=== Verify patched files exist ==="
           ls -la packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+          
           echo "=== Verify _normalYaml function ==="
           grep -A 10 "dynamic _normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -15
+          
+          echo "=== Verify file is not truncated ==="
+          TOTAL_LINES=$(wc -l < packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart)
+          echo "Total lines in pub_interceptor.dart: $TOTAL_LINES"
+          if [ $TOTAL_LINES -lt 1000 ]; then
+            echo "ERROR: File appears to be truncated! Expected > 1000 lines"
+            tail -50 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
+            exit 1
+          fi
+          echo "File integrity verified"
 
       - name: Build _example2 APK
         run: |
