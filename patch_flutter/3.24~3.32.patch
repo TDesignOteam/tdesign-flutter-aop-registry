@@ -250,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1052 @@
+@@ -0,0 +1,1057 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -358,6 +358,11 @@ index 00000000000..6a40cc65ed5
 +      // git clone
 +      if (aopRegistryProject.existsSync()) {
 +        aopRegistryProject.deleteSync(recursive: true);
++      }
++
++      // 确保父目录存在
++      if (!aopRegistryProject.parent.existsSync()) {
++        aopRegistryProject.parent.createSync(recursive: true);
 +      }
 +
 +      _runGit(aopRegistryProject.parent.absolute.path, gitCloneMarket, '_fetchAOPRegistry git clone error');
