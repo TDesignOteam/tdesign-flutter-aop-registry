@@ -518,16 +518,30 @@ index 00000000000..9075ffd880e
 +  }
 +
 +  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
++    // 确保工作目录存在
++    final Directory workDir = Directory(projectPath);
++    if (!workDir.existsSync()) {
++      final String msg = '$errorTips: Working directory does not exist: $projectPath';
++      if (throwError) {
++        throw AOPError(msg);
++      }
++      Logger.e(msg, tag: _tag);
++      return false;
++    }
++
 +    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
 +    if (processResult.exitCode == processResultOK) {
 +      return true;
 +    }
 +
++    // 增强错误信息
++    final String errorMsg = '$errorTips\nCommand: ${command.join(' ')}\nWorking directory: $projectPath\nStderr: ${processResult.stderr}\nStdout: ${processResult.stdout}';
++    
 +    if (throwError) {
-+      throw AOPError('$errorTips: ${processResult.stderr}');
++      throw AOPError(errorMsg);
 +    }
 +
-+    Logger.e('$errorTips: ${processResult.stderr}', tag: _tag);
++    Logger.e(errorMsg, tag: _tag);
 +    return false;
 +  }
 +
