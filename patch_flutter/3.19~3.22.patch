@@ -1087,7 +1087,7 @@ index 00000000000..6a40cc65ed5
 +      }) {
 +    bool dependenciesChanged = false;
 +    if (yamlConfigs[yamlEnvironment] is Map) {
-+      yamlConfigs[yamlEnvironment] = (yamlConfigs[yamlEnvironment] as Map<dynamic, dynamic>).map<dynamic, dynamic>((dynamic key, dynamic value) => MapEntry<dynamic, dynamic>(key, '\"$value\"'));
++      yamlConfigs[yamlEnvironment] = Map<dynamic, dynamic>.fromEntries((yamlConfigs[yamlEnvironment] as Map<dynamic, dynamic>).entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) => MapEntry<dynamic, dynamic>(entry.key, '\"${entry.value}\"')));
 +    }
 +
 +    // 过滤AOP依赖与dart不一致的依赖
@@ -1300,8 +1300,8 @@ index 00000000000..6a40cc65ed5
 +// yamlNode转化为普通结构
 +dynamic _normalYaml(dynamic yamlNode) {
 +  if (yamlNode is YamlMap) {
-+    return Map<dynamic, dynamic>.from(yamlNode.map<dynamic, dynamic>((dynamic key, dynamic value) {
-+      return MapEntry<dynamic, dynamic>(_normalYaml(key), _normalYaml(value));
++    return Map<dynamic, dynamic>.fromEntries(yamlNode.entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) {
++      return MapEntry<dynamic, dynamic>(_normalYaml(entry.key), _normalYaml(entry.value));
 +    }));
 +  }
 +

@@ -27,11 +27,11 @@ jobs:
           cd $FLUTTER_ROOT
           git restore .
           git clean -fd
+          rm -rf bin/cache/
           echo "=== Checking patch compatibility ==="
           git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
           echo "=== Applying patch with -p1 ==="
           git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
-          rm -f bin/cache/flutter_tools.stamp bin/cache/flutter_tools.snapshot
           echo "AOP Registry patch applied"
 
       - name: Build _example APK
@@ -65,11 +65,11 @@ jobs:
           cd $FLUTTER_ROOT
           git restore .
           git clean -fd
+          rm -rf bin/cache/
           echo "=== Checking patch compatibility ==="
           git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
           echo "=== Applying patch with -p1 ==="
           git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
-          rm -f bin/cache/flutter_tools.stamp bin/cache/flutter_tools.snapshot
           echo "AOP Registry patch applied"
 
       - name: Build _example2 APK
