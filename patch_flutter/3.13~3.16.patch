@@ -521,7 +521,7 @@ index 00000000000..9075ffd880e
 +    ProcessResult processResult;
 +    try {
 +      processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
-+    } on ProcessException {
++    } on ProcessException catch (_) {
 +      // 兼容 CI 环境：若抛出异常且是 git 命令，尝试使用 /usr/bin/git
 +      if (!Platform.isWindows && command.isNotEmpty && command.first == 'git') {
 +        processResult = globals.processManager.runSync(<String>['/usr/bin/git', ...command.sublist(1)], workingDirectory: projectPath);
