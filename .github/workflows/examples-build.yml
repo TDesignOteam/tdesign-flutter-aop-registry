@@ -27,12 +27,14 @@ jobs:
           cd $FLUTTER_ROOT
           git restore .
           git clean -fd
-          rm -rf bin/cache/
+          rm -rf bin/cache/ .dart_tool/ .packages
           echo "=== Checking patch compatibility ==="
           git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
           echo "=== Applying patch with -p1 ==="
           git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
           echo "AOP Registry patch applied"
+          echo "=== Patch content check ==="
+          grep -n "_normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -5 || true
 
       - name: Build _example APK
         run: |
@@ -65,12 +67,14 @@ jobs:
           cd $FLUTTER_ROOT
           git restore .
           git clean -fd
-          rm -rf bin/cache/
+          rm -rf bin/cache/ .dart_tool/ .packages
           echo "=== Checking patch compatibility ==="
           git apply --check -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch 2>&1 | head -100 || true
           echo "=== Applying patch with -p1 ==="
           git apply -p1 $GITHUB_WORKSPACE/patch_flutter/3.24~3.32.patch
           echo "AOP Registry patch applied"
+          echo "=== Patch content check ==="
+          grep -n "_normalYaml" packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart | head -5 || true
 
       - name: Build _example2 APK
         run: |
