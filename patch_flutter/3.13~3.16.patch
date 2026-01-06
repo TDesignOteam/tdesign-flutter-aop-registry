@@ -320,6 +320,8 @@ index 00000000000..9075ffd880e
 +  /// ① 获取所有AOP工程
 +  Future<Map<String, Directory>> _fetchAOPProject(String workingDirectory, Map<String, String>? environment, List<Object> pubCommands) async {
 +    // 先执行完pub
++    print('workingDirectory: $workingDirectory');
++    print('environment: $environment');
 +    final ProcessResult processResult = globals.processManager.runSync(pubCommands, workingDirectory: workingDirectory, environment: environment);
 +    if (processResult.exitCode != processResultOK) {
 +      Logger.w('工程pub操作失败，error: ${processResult.stderr}\n', tag: _tag);
@@ -518,30 +520,16 @@ index 00000000000..9075ffd880e
 +  }
 +
 +  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
-+    // 确保工作目录存在
-+    final Directory workDir = Directory(projectPath);
-+    if (!workDir.existsSync()) {
-+      final String msg = '$errorTips: Working directory does not exist: $projectPath';
-+      if (throwError) {
-+        throw AOPError(msg);
-+      }
-+      Logger.e(msg, tag: _tag);
-+      return false;
-+    }
-+
 +    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
 +    if (processResult.exitCode == processResultOK) {
 +      return true;
 +    }
 +
-+    // 增强错误信息
-+    final String errorMsg = '$errorTips\nCommand: ${command.join(' ')}\nWorking directory: $projectPath\nStderr: ${processResult.stderr}\nStdout: ${processResult.stdout}';
-+    
 +    if (throwError) {
-+      throw AOPError(errorMsg);
++      throw AOPError('$errorTips: ${processResult.stderr}');
 +    }
 +
-+    Logger.e(errorMsg, tag: _tag);
++    Logger.e('$errorTips: ${processResult.stderr}', tag: _tag);
 +    return false;
 +  }
 +
