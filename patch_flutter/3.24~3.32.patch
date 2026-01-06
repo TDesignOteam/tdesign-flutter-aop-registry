@@ -1783,11 +1783,18 @@ index 00000000000..14ee069b7b5
 +
 +// flutter版本
 +String get flutterVersion => () {
-+      final String frameworkRevision = (globals.processManager.runSync(
++      ProcessResult result = globals.processManager.runSync(
 +        <String>['git', '-c', 'log.showSignature=false', 'log', '-n', '1', '--pretty=format:%H'],
 +        workingDirectory: Cache.flutterRoot,
-+      ).stdout as String)
-+          .trim();
++      );
++      // 兼容 CI 环境：若 git 命令失败则尝试使用绝对路径
++      if (result.exitCode != 0 && !Platform.isWindows) {
++        result = globals.processManager.runSync(
++          <String>['/usr/bin/git', '-c', 'log.showSignature=false', 'log', '-n', '1', '--pretty=format:%H'],
++          workingDirectory: Cache.flutterRoot,
++        );
++      }
++      final String frameworkRevision = (result.stdout as String).trim();
 +
 +      final GitTagVersion gitTagVersion = GitTagVersion.determine(globals.processUtils, globals.platform, workingDirectory: Cache.flutterRoot, gitRef: frameworkRevision);
 +      return '${gitTagVersion.x}.${gitTagVersion.y}.${gitTagVersion.z}';

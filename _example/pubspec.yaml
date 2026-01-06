@@ -76,8 +76,8 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 
-## AOPRegistry配置示例
-#AOPRegistry:
+# # AOPRegistry配置示例
+# AOPRegistry:
 #  enable: true # AOP是否生效，插件可由使用方setPluginEnable变更
 #  compileTarget: frontend_server, dart2js # 目标编译流程，默认android/iOS/web都支持切面编程
 #  versions: # 插件支持的flutter版本配置
@@ -92,4 +92,13 @@ flutter:
 #    plugin2: true
 #  saveDartDependencies: true # 默认false，为true时可以显式保留yaml处理后的依赖项
 #  flutterRoot: xxxx # 变更FlutterSDK根路径，本地Flutter引擎调试时使用
+
+AOPRegistry:
+  enable: true # AOP是否生效，插件可由使用方setPluginEnable变更
+  compileTarget: frontend_server, dart2js # 目标编译流程，默认android/iOS/web都支持切面编程
+  versions: # 插件支持的flutter版本配置
+    negativeInfinity~2.2.0:
+      unsupportedTips: 请在flutter 2.2.+运行项目工程 # 命中该flutter版本时，插件不支持可以打印提示
+    2.2.0~infinity:
+      path: ./aop_tools # 插件/项目自定义插桩目录
 
