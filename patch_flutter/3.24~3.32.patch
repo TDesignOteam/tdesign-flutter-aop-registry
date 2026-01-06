@@ -250,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1057 @@
+@@ -0,0 +1,1060 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -517,7 +517,10 @@ index 00000000000..6a40cc65ed5
 +
 +            // 提交
 +            _runGit(dartProject.absolute.path, gitAdd, '_fetchDartProject git add 2 error');
-+            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git add 2 error');
++            // 配置 Git 用户信息（CI 环境可能没有配置）
++            _runGit(dartProject.absolute.path, 'git config user.email "aop@aop.com"', '_fetchDartProject git config email error', throwError: false);
++            _runGit(dartProject.absolute.path, 'git config user.name "AOPTools"', '_fetchDartProject git config name error', throwError: false);
++            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git commit error');
 +          } on AOPError catch (e) {
 +            if (isRetry) {
 +              rethrow;
