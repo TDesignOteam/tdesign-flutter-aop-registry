@@ -1300,9 +1300,7 @@ index 00000000000..6a40cc65ed5
 +// yamlNode转化为普通结构
 +dynamic _normalYaml(dynamic yamlNode) {
 +  if (yamlNode is YamlMap) {
-+    return Map<dynamic, dynamic>.fromEntries(yamlNode.entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) {
-+      return MapEntry<dynamic, dynamic>(_normalYaml(entry.key), _normalYaml(entry.value));
-+    }));
++    return Map<dynamic, dynamic>.fromEntries(yamlNode.entries.map<MapEntry<dynamic, dynamic>>((MapEntry<dynamic, dynamic> entry) => MapEntry<dynamic, dynamic>(_normalYaml(entry.key), _normalYaml(entry.value))));
 +  }
 +
 +  if (yamlNode is YamlList) {
