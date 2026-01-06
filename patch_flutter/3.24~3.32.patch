@@ -536,7 +536,17 @@ index 00000000000..6a40cc65ed5
 +  }
 +
 +  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
-+    ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
++    ProcessResult processResult;
++    try {
++      processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
++    } on ProcessException {
++      // 兼容 CI 环境：若抛出异常且是 git 命令，尝试使用 /usr/bin/git
++      if (!Platform.isWindows && command.isNotEmpty && command.first == 'git') {
++        processResult = globals.processManager.runSync(<String>['/usr/bin/git', ...command.sublist(1)], workingDirectory: projectPath);
++      } else {
++        rethrow;
++      }
++    }
 +    // 兼容 CI 环境：若 git 命令失败且非 Windows 尝试使用 /usr/bin/git
 +    if (processResult.exitCode != processResultOK && !Platform.isWindows && command.isNotEmpty && command.first == 'git') {
 +      processResult = globals.processManager.runSync(<String>['/usr/bin/git', ...command.sublist(1)], workingDirectory: projectPath);

@@ -1,8 +1,6 @@
 name: Test Examples Build
 
 on:
-  push:
-    branches: [main, develop, 'rss1102/**']
   pull_request:
     branches: [main, develop]
 
@@ -15,15 +13,13 @@ jobs:
 
       - uses: actions/setup-java@v5
         with:
-          distribution: "jetbrains"
+          distribution: "temurin"
           java-version: "11"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          cmdline-tools-version: "12"
-        env:
-          SKIP_JDK_VERSION_CHECK: true
+          cmdline-tools-version: "8.0"
 
       - name: Set up Flutter
         uses: Luozf12345/workflows/actions/setup-flutter@main
