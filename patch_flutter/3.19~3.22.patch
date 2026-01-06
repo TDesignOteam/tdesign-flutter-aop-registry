@@ -250,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1050 @@
+@@ -0,0 +1,1052 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -299,6 +299,8 @@ index 00000000000..6a40cc65ed5
 +  Future<List<Object>> handle(String? workingDirectory, Map<String, String>? environment, List<Object> command) async {
 +    final int startTime = DateTime.now().millisecondsSinceEpoch;
 +    Logger.emptyLog();
++    print('workingDirectory: $workingDirectory');
++    print('environment: $environment');
 +
 +    workingDirectory ??= globals.fs.currentDirectory.absolute.path;
 +
@@ -338,8 +340,6 @@ index 00000000000..6a40cc65ed5
 +  /// ① 获取所有AOP工程
 +  Future<Map<String, Directory>> _fetchAOPProject(String workingDirectory, Map<String, String>? environment, List<Object> pubCommands) async {
 +    // 先执行完pub
-+    print('workingDirectory: $workingDirectory');
-+    print('environment: $environment');
 +    final ProcessResult processResult = globals.processManager.runSync(pubCommands, workingDirectory: workingDirectory, environment: environment);
 +    if (processResult.exitCode != processResultOK) {
 +      Logger.w('工程pub操作失败，error: ${processResult.stderr}\n', tag: _tag);
