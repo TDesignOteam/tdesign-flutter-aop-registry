@@ -5,8 +5,8 @@ Subject: [PATCH] flutterPatch 1.1.3
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  197 ++++
- .../interceptor/impl/pub_interceptor.dart     | 1148 +++++++++++++++++
+ .../interceptor/impl/compile_interceptor.dart |  200 ++++
+ .../interceptor/impl/pub_interceptor.dart     | 1050 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
  .../aop_tools/interceptor/utils/constant.dart |  110 ++
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 2008 insertions(+), 1 deletion(-)
+ 10 files changed, 1913 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -40,7 +40,7 @@ new file mode 100644
 index 00000000000..fada801863a
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,197 @@
+@@ -0,0 +1,200 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
@@ -175,8 +175,11 @@ index 00000000000..fada801863a
 +    if (command.last is String && (command.last as String).endsWith('.dart')) {
 +      Logger.d('---------------------------------', tag: _tag);
 +      Logger.d('AOP调试信息, Dart Command Line App', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* DartFile: ${starterFile.path}', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* Program arguments: ${command.sublist(snapshotIndex + 1).join(' ')}', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* Working directory: ${normalize(workingDirectory.absolute.path)}', tag: _tag);
 +      Logger.emptyLog();
 +    }
@@ -247,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1148 @@
+@@ -0,0 +1,1050 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -296,142 +299,83 @@ index 00000000000..6a40cc65ed5
 +  Future<List<Object>> handle(String? workingDirectory, Map<String, String>? environment, List<Object> command) async {
 +    final int startTime = DateTime.now().millisecondsSinceEpoch;
 +    Logger.emptyLog();
-+    Logger.d('==================== AOP Pub Interceptor Start ====================', tag: _tag);
-+    Logger.d('Command: ${command.join(' ')}', tag: _tag);
-+    Logger.d('WorkingDirectory: $workingDirectory', tag: _tag);
-+    Logger.d('Environment: $environment', tag: _tag);
-+    Logger.d('FlutterVersion: $flutterVersion, DartVersion: $dartVersion', tag: _tag);
 +
 +    workingDirectory ??= globals.fs.currentDirectory.absolute.path;
-+    Logger.d('Resolved WorkingDirectory: $workingDirectory', tag: _tag);
 +
 +    // 获取所有AOP工程：i.主工程下有AOPTools; ii.依赖工程设有AOPRegistry配置。
-+    Logger.d('开始获取AOP工程...', tag: _tag);
 +    final Map<String, Directory> aopProjects = await _fetchAOPProject(workingDirectory, environment, command);
 +    if (aopProjects.isEmpty) {
-+      Logger.d('未发现AOP工程，跳过AOP处理', tag: _tag);
-+      Logger.d('==================== AOP Pub Interceptor End ====================', tag: _tag);
 +      return command;
 +    }
-+    Logger.d('发现AOP工程数量: ${aopProjects.length}', tag: _tag);
-+    aopProjects.forEach((String name, Directory dir) {
-+      Logger.d('  - $name: ${dir.path}', tag: _tag);
-+    });
++    Logger.d('发现AOP工程: $aopProjects ', tag: _tag);
 +
 +    // 获取依赖的AOPRegistry工程
-+    Logger.d('开始获取AOPRegistry工程...', tag: _tag);
 +    final Directory aopRegistryProject = _fetchAOPRegistry(command.first as String, aopProjects, workingDirectory);
-+    Logger.d('AOPRegistry工程路径: ${aopRegistryProject.path}', tag: _tag);
-+    Logger.d('AOPRegistryVersion: $marketVersion, PatchVersion: $patchVersion', tag: _tag);
-+    Logger.d('提示: 第一次pub get/upgrade可能需要几分钟的时间....', tag: _tag);
++
++    Logger.d('当前AOPRegistryVersion: $marketVersion, patchVersion: $patchVersion', tag: _tag);
++    Logger.d('第一次pub get/upgrade可能需要几分钟的时间....', tag: _tag);
 +
 +    // 解析配置
-+    Logger.d('------------------------------------------------------------', tag: _tag);
-+    Logger.d('[1/4] 解析Dart配置...', tag: _tag);
-+    final int step1Start = DateTime.now().millisecondsSinceEpoch;
 +    final Map<dynamic, dynamic>? dartConfigs = _parseDartConfig(aopRegistryProject);
 +    if (dartConfigs == null) {
 +      Logger.e('AOPRegistry不支持当前dart版本，请联系开发团队适配', tag: _tag);
-+      Logger.d('==================== AOP Pub Interceptor End ====================', tag: _tag);
 +      return command;
 +    }
-+    Logger.d('[1/4] 解析Dart配置完成, 耗时: ${DateTime.now().millisecondsSinceEpoch - step1Start}ms', tag: _tag);
-+    Logger.d('  - Patch文件: ${dartConfigs[dartConfigPatch]}', tag: _tag);
-+    Logger.d('  - Shell文件: ${dartConfigs[dartConfigShell]}', tag: _tag);
 +
 +    // 获取dart工程: 在AOPRegistry yaml文件中写入dart对应版本的依赖，pub upgrade以获取，通过补丁、脚本修改dart，并提交
-+    Logger.d('------------------------------------------------------------', tag: _tag);
-+    Logger.d('[2/4] 获取Dart工程...', tag: _tag);
-+    final int step2Start = DateTime.now().millisecondsSinceEpoch;
 +    final Directory dartProject = await _fetchDartProject(aopRegistryProject, workingDirectory, dartConfigs);
-+    Logger.d('[2/4] 获取Dart工程完成, 耗时: ${DateTime.now().millisecondsSinceEpoch - step2Start}ms', tag: _tag);
-+    Logger.d('  - Dart工程路径: ${dartProject.path}', tag: _tag);
 +
 +    // 配置各工程AOP环境：通过dart DEPS以及AOPRegistry配置文件，生成新的AOP工程的yaml文件，AOPRegistry的yaml文件(含AOP工程依赖)，并且pub upgrade
-+    Logger.d('------------------------------------------------------------', tag: _tag);
-+    Logger.d('[3/4] 处理AOP工程依赖...', tag: _tag);
-+    final int step3Start = DateTime.now().millisecondsSinceEpoch;
 +    await _handleDependencies(aopProjects, aopRegistryProject, dartProject, dartConfigs);
-+    Logger.d('[3/4] 处理AOP工程依赖完成, 耗时: ${DateTime.now().millisecondsSinceEpoch - step3Start}ms', tag: _tag);
 +
 +    // AOPRegistry生成main.dart，main_web.dart入口，注入初始化函数。
-+    Logger.d('------------------------------------------------------------', tag: _tag);
-+    Logger.d('[4/4] 生成AOP入口文件...', tag: _tag);
-+    final int step4Start = DateTime.now().millisecondsSinceEpoch;
 +    _generateStarterEntry(aopProjects, aopRegistryProject, workingDirectory);
-+    Logger.d('[4/4] 生成AOP入口文件完成, 耗时: ${DateTime.now().millisecondsSinceEpoch - step4Start}ms', tag: _tag);
 +
-+    final int totalTime = DateTime.now().millisecondsSinceEpoch - startTime;
-+    Logger.d('------------------------------------------------------------', tag: _tag);
-+    Logger.d('AOP依赖处理完成!', tag: _tag);
-+    Logger.d('  - 总耗时: ${totalTime}ms', tag: _tag);
-+    Logger.d('  - AOP工程数量: ${aopProjects.length}', tag: _tag);
-+    Logger.d('==================== AOP Pub Interceptor End ====================', tag: _tag);
-+    Logger.emptyLog();
++    Logger.d('完成AOP依赖处理，用时: ${DateTime.now().millisecondsSinceEpoch - startTime}ms\n', tag: _tag);
 +    return command;
 +  }
 +
 +  /// ① 获取所有AOP工程
 +  Future<Map<String, Directory>> _fetchAOPProject(String workingDirectory, Map<String, String>? environment, List<Object> pubCommands) async {
-+    Logger.d('执行原始pub命令: ${pubCommands.join(' ')}', tag: _tag);
 +    // 先执行完pub
 +    final ProcessResult processResult = globals.processManager.runSync(pubCommands, workingDirectory: workingDirectory, environment: environment);
 +    if (processResult.exitCode != processResultOK) {
-+      Logger.w('工程pub操作失败，exitCode: ${processResult.exitCode}', tag: _tag);
-+      Logger.w('错误信息: ${processResult.stderr}', tag: _tag);
++      Logger.w('工程pub操作失败，error: ${processResult.stderr}\n', tag: _tag);
 +      return <String, Directory>{};
 +    }
-+    Logger.d('原始pub命令执行成功', tag: _tag);
 +
 +    return fetchAOPProject(workingDirectory);
 +  }
 +
 +  /// ② 获取AOPRegistry工程
 +  Directory _fetchAOPRegistry(String commandPath, Map<String, Directory> aopProjects, String workPath) {
-+    Logger.d('获取AOPRegistry工程, commandPath: $commandPath', tag: _tag);
 +    final Directory aopRegistryProject = fetchAOPRegistry(commandPath);
 +    final File recordFile = File(join(aopRegistryProject.path, projectFileName));
-+    Logger.d('AOPRegistry目标路径: ${aopRegistryProject.path}', tag: _tag);
 +
 +    if (!File(join(aopRegistryProject.path, yamlName)).existsSync()) {
 +      // git clone
-+      Logger.d('AOPRegistry工程不存在，开始git clone...', tag: _tag);
 +      if (aopRegistryProject.existsSync()) {
-+        Logger.d('清理已存在的目录: ${aopRegistryProject.path}', tag: _tag);
 +        aopRegistryProject.deleteSync(recursive: true);
 +      }
 +
-+      // 确保父目录存在
-+      if (!aopRegistryProject.parent.existsSync()) {
-+        Logger.d('创建父目录: ${aopRegistryProject.parent.path}', tag: _tag);
-+        aopRegistryProject.parent.createSync(recursive: true);
-+      }
-+
-+      Logger.d('执行git clone: $gitCloneMarket', tag: _tag);
 +      _runGit(aopRegistryProject.parent.absolute.path, gitCloneMarket, '_fetchAOPRegistry git clone error');
-+      Logger.d('git clone完成', tag: _tag);
 +    } else {
 +      // 切换工程的依赖清空在_fetchDartProject中进行
-+      Logger.d('AOPRegistry工程已存在，尝试更新...', tag: _tag);
 +
 +      // 保留缓存，更新
 +      final bool gitSuccess = _runGit(aopRegistryProject.absolute.path, gitPull, '_fetchAOPRegistry git pull error', throwError: false);
 +
 +      // 更新
 +      if (!gitSuccess) {
-+        Logger.d('git pull失败，尝试stash后重新pull...', tag: _tag);
 +        _runGit(aopRegistryProject.absolute.path, gitAdd, '_fetchAOPRegistry git add error');
 +        _runGit(aopRegistryProject.absolute.path, gitStash, '_fetchAOPRegistry git stash error');
 +        _runGit(aopRegistryProject.absolute.path, gitStashClear, '_fetchAOPRegistry git stash clear error');
 +        _runGit(aopRegistryProject.absolute.path, gitPull, '_fetchAOPRegistry git pull2 error');
-+      } else {
-+        Logger.d('git pull成功', tag: _tag);
 +      }
 +    }
 +
 +    // 清除AOPRegistry工程配置
 +    if (recordFile.existsSync()) {
-+      Logger.d('清除旧的工程配置文件: ${recordFile.path}', tag: _tag);
 +      File(join(aopRegistryProject.path, projectFileName)).deleteSync();
 +    }
 +
@@ -491,11 +435,8 @@ index 00000000000..6a40cc65ed5
 +
 +  /// ④ 获取dart工程
 +  Future<Directory> _fetchDartProject(Directory aopPRegistryProject, String? workingDirectory, Map<dynamic, dynamic> dartConfigs, {bool isRetry = false}) async {
-+    Logger.d('开始获取Dart工程${isRetry ? " (重试)" : ""}...', tag: _tag);
 +    final File dartPatchFile = File(normalize(absolute(aopPRegistryProject.path, dartConfigs[dartConfigPatch] as String)));
 +    final File dartShellFile = File(normalize(absolute(aopPRegistryProject.path, dartConfigs[dartConfigShell] as String)));
-+    Logger.d('  - Patch文件: ${dartPatchFile.path}', tag: _tag);
-+    Logger.d('  - Shell文件: ${dartShellFile.path}', tag: _tag);
 +
 +    if (!dartPatchFile.existsSync() || !dartShellFile.existsSync()) {
 +      throw AOPError('未知错误，dart改造文件不存在, dartPatchFile: $dartPatchFile, dartShellFile: $dartShellFile');
@@ -503,7 +444,6 @@ index 00000000000..6a40cc65ed5
 +
 +    // dart处理完成的commit
 +    final String newCommit = _createDartCommit(dartPatchFile: dartPatchFile, dartShellFile: dartShellFile);
-+    Logger.d('  - 目标Commit: $newCommit', tag: _tag);
 +
 +    // 检查dart commit是否一致，满足条件
 +    bool checkDart(Directory dartProject) {
@@ -513,32 +453,24 @@ index 00000000000..6a40cc65ed5
 +      if (lastCommitList.length > 2) {
 +        lastCommit = lastCommitList[1];
 +      }
-+      Logger.d('  - 当前Commit: $lastCommit', tag: _tag);
 +
 +      // 使用缓存，无需改造
-+      final bool matched = lastCommit == newCommit;
-+      Logger.d('  - Commit匹配: $matched', tag: _tag);
-+      return matched;
++      return lastCommit == newCommit;
 +    }
 +
 +    // 先尝试从缓存中获取，优化pub耗时
-+    Logger.d('尝试从缓存中获取Dart工程...', tag: _tag);
 +    final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path, ignoreError: true);
 +    for (final Package package in packageConfig.packages) {
 +      if (package.name == kernelPackage) {
 +        final Directory dartProject = Directory(Uri.decodeComponent(package.root.path)).parent.parent;
-+        Logger.d('  - 发现缓存Dart工程: ${dartProject.path}', tag: _tag);
 +        if (dartProject.existsSync() && checkDart(dartProject)) {
-+          Logger.d('使用缓存的Dart工程', tag: _tag);
 +          return dartProject;
 +        }
 +      }
 +    }
-+    Logger.d('缓存中未找到匹配的Dart工程，开始获取...', tag: _tag);
 +
 +    final AOPYamlConfig aopRegistryConfig = AOPYamlConfig(File(join(aopPRegistryProject.path, yamlName)));
 +    if (aopRegistryConfig.writeMarketKernelDependency(dependencyConfiguration: DependencyConfiguration.dependency_overrides)) {
-+      Logger.d('写入kernel依赖成功，执行pub get...', tag: _tag);
 +      // 获取dart工程依赖
 +      final ProcessResult processResult = globals.processManager.runSync(<Object>[..._currentPubCommand, pubCommandGet, ProcessDecorator.skipInterceptCommand], workingDirectory: aopPRegistryProject.path);
 +      if (processResult.exitCode != processResultOK &&
@@ -549,24 +481,20 @@ index 00000000000..6a40cc65ed5
 +          })) {
 +        throw AOPError('请flutter clean后重试，获取AOPRegistry工程的dart依赖失败 error: ${processResult.stderr}');
 +      }
-+      Logger.d('pub get执行成功', tag: _tag);
 +
 +      final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path);
 +      for (final Package package in packageConfig.packages) {
 +        if (package.name == kernelPackage) {
 +          final Directory dartProject = Directory(Uri.decodeComponent(package.root.path)).parent.parent;
-+          Logger.d('获取到Dart工程: ${dartProject.path}', tag: _tag);
 +          if (!dartProject.existsSync()) {
 +            throw AOPError('获取dart工程失败！');
 +          }
 +
 +          if (checkDart(dartProject)) {
-+            Logger.d('Dart工程已是最新版本', tag: _tag);
 +            return dartProject;
 +          }
 +
 +          // 重新处理Dart，加入hook代码
-+          Logger.d('开始对Dart工程进行AOP改造...', tag: _tag);
 +
 +          try {
 +            // 切换到对应版本
@@ -574,31 +502,20 @@ index 00000000000..6a40cc65ed5
 +            _runGit(dartProject.absolute.path, gitStash, '_fetchDartProject git stash error');
 +            _runGit(dartProject.absolute.path, gitStashClear, '_fetchDartProject git stash clear error');
 +            _runGit(dartProject.absolute.path, gitFetch, '_fetchDartProject git fetch error');
-+            Logger.d('  - git reset --hard $dartVersion', tag: _tag);
 +            _runGit(dartProject.absolute.path, '$gitResetHard $dartVersion', '_fetchDartProject git reset --hard error');
 +
 +            // 打入补丁
-+            Logger.d('  - 应用patch文件...', tag: _tag);
 +            _runGit(dartProject.absolute.path, '$gitApplyPatch ${dartPatchFile.absolute.path}', '_fetchDartProject git apply patch error');
-+            Logger.d('  - 执行shell脚本...', tag: _tag);
 +            _runGitByList(dartProject.absolute.path, <String>[dartShellFile.path, join(dartProject.path, kernelTargetPath)], '_fetchDartProject run dartShellFile error');
 +
 +            // 提交
-+            Logger.d('  - 提交AOP改造...', tag: _tag);
 +            _runGit(dartProject.absolute.path, gitAdd, '_fetchDartProject git add 2 error');
-+            // 检查 Git 用户信息是否已配置
-+            final String gitUserName = (globals.processManager.runSync(<String>['git', 'config', 'user.name'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
-+            final String gitUserEmail = (globals.processManager.runSync(<String>['git', 'config', 'user.email'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
-+            if (gitUserName.isEmpty || gitUserEmail.isEmpty) {
-+              throw AOPError('Git 用户信息未配置，请在外部设置 git config user.name 和 git config user.email 后重试');
-+            }
-+            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git commit error');
-+            Logger.d('Dart工程AOP改造完成', tag: _tag);
++            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git add 2 error');
 +          } on AOPError catch (e) {
 +            if (isRetry) {
 +              rethrow;
 +            }
-+            Logger.w('Dart工程改造失败，删除后重试: $e', tag: _tag);
++
 +            dartProject.deleteSync(recursive: true);
 +            return _fetchDartProject(aopPRegistryProject, workingDirectory, dartConfigs, isRetry: true);
 +          }
@@ -615,7 +532,6 @@ index 00000000000..6a40cc65ed5
 +
 +  // 运行命令，异常抛出
 +  bool _runGit(String projectPath, String command, String errorTips, {bool throwError = true}) {
-+    Logger.d('执行Git命令: $command', tag: _tag);
 +    return _runGitByList(projectPath, command.split(' '), errorTips, throwError: throwError);
 +  }
 +
@@ -654,16 +570,10 @@ index 00000000000..6a40cc65ed5
 +
 +  /// ⑤ 处理各项AOP工程依赖
 +  Future<void> _handleDependencies(Map<String, Directory> aopProjects, Directory aopRegistryProject, Directory dartProject, Map<dynamic, dynamic> dartConfigs) async {
-+    Logger.d('开始处理AOP工程依赖...', tag: _tag);
-+    Logger.d('  - AOP工程数量: ${aopProjects.length}', tag: _tag);
-+    Logger.d('  - AOPRegistry路径: ${aopRegistryProject.path}', tag: _tag);
-+    Logger.d('  - Dart工程路径: ${dartProject.path}', tag: _tag);
-+    
 +    final File DEPSFile = File(join(dartProject.path, dartDEPS));
 +    if (!DEPSFile.existsSync()) {
 +      throw AOPError('未知错误，DEPS文件不存在: ${DEPSFile.path}');
 +    }
-+    Logger.d('读取DEPS文件: ${DEPSFile.path}', tag: _tag);
 +
 +    final String depsFileStr = DEPSFile.readAsStringSync(encoding: utf8);
 +
@@ -914,26 +824,18 @@ index 00000000000..6a40cc65ed5
 +
 +  /// ⑥ 生成AOP的入口文件
 +  void _generateStarterEntry(Map<String, Directory> aopProjects, Directory aopRegistryProject, String workPath) {
-+    Logger.d('开始生成AOP入口文件...', tag: _tag);
 +    final Map<String, Directory> frontendServerAOPProjects = <String, Directory>{...aopProjects}..removeWhere((String key, Directory value) => !value.enableInFrontendServer());
 +    final Map<String, Directory> dart2JsAOPProjects = <String, Directory>{...aopProjects}..removeWhere((String key, Directory value) => !value.enableInDart2Js());
-+    Logger.d('  - FrontendServer AOP工程数量: ${frontendServerAOPProjects.length}', tag: _tag);
-+    Logger.d('  - Dart2Js AOP工程数量: ${dart2JsAOPProjects.length}', tag: _tag);
 +
 +    final File startFile = File(join(aopRegistryProject.path, libDir, staterFileName));
 +    final File webStartFile = File(join(aopRegistryProject.path, libDir, dart2JsStaterFileName));
 +    final File projectRecordFile = File(join(aopRegistryProject.path, projectFileName));
-+    Logger.d('  - 入口文件路径: ${startFile.path}', tag: _tag);
-+    Logger.d('  - Web入口文件路径: ${webStartFile.path}', tag: _tag);
-+    Logger.d('  - 工程配置文件路径: ${projectRecordFile.path}', tag: _tag);
-+    
 +    <File>[startFile, webStartFile, projectRecordFile].forEach((final File file) {
 +      if (file.existsSync()) {
 +        file.deleteSync();
 +      }
 +      file.createSync(recursive: true);
 +    });
-+    Logger.d('入口文件创建完成', tag: _tag);
 +
 +    startFile.writeAsStringSync('''
 +${compareVersions(dartVersion, '3.0.0') >= 0 ? "" : "// @dart=2.8" /*dart 3.0.0以上强制空安全*/}
@@ -959,7 +861,7 @@ index 00000000000..6a40cc65ed5
 +        args.remove('--incremental');
 +      }
 +    } catch (e) {
-+      print('AOPTools ====> ERROR AOP argParser error: $e');
++      print(' ERROR AOP argParser error: $e');
 +    }
 +  }
 +
@@ -1988,7 +1890,7 @@ index 00000000000..4e34081cc4c
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/logger.dart
 @@ -0,0 +1,36 @@
-+/// 日志打印工具
++///  日志打印工具
 +class Logger {
 +  static void d(Object msg, {String? tag, bool silent = false}) {
 +    if (silent) {

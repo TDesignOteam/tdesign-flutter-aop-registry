@@ -5,8 +5,8 @@ Subject: [PATCH] flutterPatch 1.1.3
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  197 ++++
- .../interceptor/impl/pub_interceptor.dart     | 1061 +++++++++++++++++
+ .../interceptor/impl/compile_interceptor.dart |  200 ++++
+ .../interceptor/impl/pub_interceptor.dart     | 1050 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
  .../aop_tools/interceptor/utils/constant.dart |  110 ++
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1930 insertions(+), 1 deletion(-)
+ 10 files changed, 1912 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -40,7 +40,7 @@ new file mode 100644
 index 00000000000..fccbcf92972
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,197 @@
+@@ -0,0 +1,200 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
@@ -175,8 +175,11 @@ index 00000000000..fccbcf92972
 +    if (command.last is String && (command.last as String).endsWith('.dart')) {
 +      Logger.d('---------------------------------', tag: _tag);
 +      Logger.d('AOP调试信息, Dart Command Line App', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* DartFile: ${starterFile.path}', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* Program arguments: ${command.sublist(snapshotIndex + 1).join(' ')}', tag: _tag);
++      Logger.emptyLog();
 +      Logger.d('* Working directory: ${normalize(workingDirectory.absolute.path)}', tag: _tag);
 +      Logger.emptyLog();
 +    }
@@ -247,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1071 @@
+@@ -0,0 +1,1050 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -296,8 +299,6 @@ index 00000000000..6a40cc65ed5
 +  Future<List<Object>> handle(String? workingDirectory, Map<String, String>? environment, List<Object> command) async {
 +    final int startTime = DateTime.now().millisecondsSinceEpoch;
 +    Logger.emptyLog();
-+    print('workingDirectory: $workingDirectory');
-+    print('environment: $environment');
 +
 +    workingDirectory ??= globals.fs.currentDirectory.absolute.path;
 +
@@ -315,28 +316,20 @@ index 00000000000..6a40cc65ed5
 +    Logger.d('第一次pub get/upgrade可能需要几分钟的时间....', tag: _tag);
 +
 +    // 解析配置
-+    Logger.d('[1/4] 解析Dart配置...', tag: _tag);
 +    final Map<dynamic, dynamic>? dartConfigs = _parseDartConfig(aopRegistryProject);
 +    if (dartConfigs == null) {
 +      Logger.e('AOPRegistry不支持当前dart版本，请联系开发团队适配', tag: _tag);
 +      return command;
 +    }
-+    Logger.d('[1/4] 解析Dart配置完成', tag: _tag);
 +
 +    // 获取dart工程: 在AOPRegistry yaml文件中写入dart对应版本的依赖，pub upgrade以获取，通过补丁、脚本修改dart，并提交
-+    Logger.d('[2/4] 获取Dart工程...', tag: _tag);
 +    final Directory dartProject = await _fetchDartProject(aopRegistryProject, workingDirectory, dartConfigs);
-+    Logger.d('[2/4] 获取Dart工程完成: ${dartProject.path}', tag: _tag);
 +
 +    // 配置各工程AOP环境：通过dart DEPS以及AOPRegistry配置文件，生成新的AOP工程的yaml文件，AOPRegistry的yaml文件(含AOP工程依赖)，并且pub upgrade
-+    Logger.d('[3/4] 处理AOP工程依赖...', tag: _tag);
 +    await _handleDependencies(aopProjects, aopRegistryProject, dartProject, dartConfigs);
-+    Logger.d('[3/4] 处理AOP工程依赖完成', tag: _tag);
 +
 +    // AOPRegistry生成main.dart，main_web.dart入口，注入初始化函数。
-+    Logger.d('[4/4] 生成AOP入口文件...', tag: _tag);
 +    _generateStarterEntry(aopProjects, aopRegistryProject, workingDirectory);
-+    Logger.d('[4/4] 生成AOP入口文件完成', tag: _tag);
 +
 +    Logger.d('完成AOP依赖处理，用时: ${DateTime.now().millisecondsSinceEpoch - startTime}ms\n', tag: _tag);
 +    return command;
@@ -363,11 +356,6 @@ index 00000000000..6a40cc65ed5
 +      // git clone
 +      if (aopRegistryProject.existsSync()) {
 +        aopRegistryProject.deleteSync(recursive: true);
-+      }
-+
-+      // 确保父目录存在
-+      if (!aopRegistryProject.parent.existsSync()) {
-+        aopRegistryProject.parent.createSync(recursive: true);
 +      }
 +
 +      _runGit(aopRegistryProject.parent.absolute.path, gitCloneMarket, '_fetchAOPRegistry git clone error');
@@ -522,13 +510,7 @@ index 00000000000..6a40cc65ed5
 +
 +            // 提交
 +            _runGit(dartProject.absolute.path, gitAdd, '_fetchDartProject git add 2 error');
-+            // 检查 Git 用户信息是否已配置
-+            final String gitUserName = (globals.processManager.runSync(<String>['git', 'config', 'user.name'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
-+            final String gitUserEmail = (globals.processManager.runSync(<String>['git', 'config', 'user.email'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
-+            if (gitUserName.isEmpty || gitUserEmail.isEmpty) {
-+              throw AOPError('Git 用户信息未配置，请在外部设置 git config user.name 和 git config user.email 后重试');
-+            }
-+            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git commit error');
++            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git add 2 error');
 +          } on AOPError catch (e) {
 +            if (isRetry) {
 +              rethrow;
@@ -1907,7 +1889,7 @@ index 00000000000..4e34081cc4c
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/logger.dart
 @@ -0,0 +1,36 @@
-+/// 日志打印工具
++///  日志打印工具
 +class Logger {
 +  static void d(Object msg, {String? tag, bool silent = false}) {
 +    if (silent) {
