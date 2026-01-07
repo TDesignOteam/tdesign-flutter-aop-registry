@@ -16,6 +16,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -38,7 +43,7 @@ jobs:
         run: |
           cd _example
           flutter doctor -v
-          flutter pub get --verbose
+          flutter pub get
           flutter build apk --debug
           echo "=== Build successful ==="
           ls -la build/app/outputs/flutter-apk/
@@ -53,6 +58,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -76,7 +86,7 @@ jobs:
         run: |
           cd _example2
           flutter doctor -v
-          flutter pub get --verbose
+          flutter pub get
           flutter build apk --debug
           echo "=== Build successful ==="
           ls -la build/app/outputs/flutter-apk/

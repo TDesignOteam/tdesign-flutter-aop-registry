@@ -6,7 +6,7 @@ Subject: [PATCH] flutterPatch 1.1.3
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
  .../interceptor/impl/compile_interceptor.dart |  186 +++
- .../interceptor/impl/pub_interceptor.dart     | 1039 +++++++++++++++++
+ .../interceptor/impl/pub_interceptor.dart     | 1042 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   27 +
  .../interceptor/interface/interceptor.dart    |    5 +
  .../aop_tools/interceptor/utils/constant.dart |  108 ++
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 ++
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1869 insertions(+), 1 deletion(-)
+ 10 files changed, 1872 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -232,7 +232,7 @@ new file mode 100644
 index 00000000000..7dc4ec34e26
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1049 @@
+@@ -0,0 +1,1052 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -507,9 +507,12 @@ index 00000000000..7dc4ec34e26
 +
 +            // 提交
 +            _runGit(dartProject.absolute.path, gitAdd, '_fetchDartProject git add 2 error');
-+            // 配置 Git 用户信息（CI 环境可能没有配置）
-+            _runGit(dartProject.absolute.path, 'git config user.email "aop@aop.com"', '_fetchDartProject git config email error', throwError: false);
-+            _runGit(dartProject.absolute.path, 'git config user.name "AOPTools"', '_fetchDartProject git config name error', throwError: false);
++            // 检查 Git 用户信息是否已配置
++            final String gitUserName = (globals.processManager.runSync(<String>['git', 'config', 'user.name'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
++            final String gitUserEmail = (globals.processManager.runSync(<String>['git', 'config', 'user.email'], workingDirectory: dartProject.absolute.path).stdout as String).trim();
++            if (gitUserName.isEmpty || gitUserEmail.isEmpty) {
++              throw AOPError('Git 用户信息未配置，请在外部设置 git config user.name 和 git config user.email 后重试');
++            }
 +            _runGitByList(dartProject.absolute.path, <String>[...gitCommit.split(' '), '-m"$newCommit"'], '_fetchDartProject git commit error');
 +          } on AOPError catch (e) {
 +            if (isRetry) {
