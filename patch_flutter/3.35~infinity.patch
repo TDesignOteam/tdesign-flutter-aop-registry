@@ -5,7 +5,7 @@ Subject: [PATCH] flutterPatch 1.1.3
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  204 ++++
+ .../interceptor/impl/compile_interceptor.dart |  202 ++++
  .../interceptor/impl/pub_interceptor.dart     | 1061 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1927 insertions(+), 1 deletion(-)
+ 10 files changed, 1925 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -40,7 +40,7 @@ new file mode 100644
 index 00000000000..fccbcf92972
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,204 @@
+@@ -0,0 +1,202 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
@@ -173,27 +173,24 @@ index 00000000000..fccbcf92972
 +
 +    // 热重启、recompile时也会走到此处，仅带main.dart入口的编译是可AOP调试的
 +    if (command.last is String && (command.last as String).endsWith('.dart')) {
-+      print('''
-+---------------------------------
-+AOP调试信息, Dart Command Line App
-+
-+* DartFile: ${starterFile.path}
-+
-+* Program arguments: ${command.sublist(snapshotIndex + 1).join(' ')}
-+
-+* Working directory: ${normalize(workingDirectory.absolute.path)}
-+
-+''');
++      Logger.d('---------------------------------', tag: _tag);
++      Logger.d('AOP调试信息, Dart Command Line App', tag: _tag);
++      Logger.d('* DartFile: ${starterFile.path}', tag: _tag);
++      Logger.d('* Program arguments: ${command.sublist(snapshotIndex + 1).join(' ')}', tag: _tag);
++      Logger.d('* Working directory: ${normalize(workingDirectory.absolute.path)}', tag: _tag);
++      Logger.emptyLog();
 +    }
 +
 +    return command;
 +  }
 +
 +  Future<bool> runPubGet(String dartPath) async {
-+    print('Running "flutter pub get" in ${globals.fs.currentDirectory.basename}...');
++    Logger.d('Running "flutter pub get" in ${globals.fs.currentDirectory.basename}...', tag: _tag);
 +    final List<String> pubCommand = compareVersions(flutterVersion, '2.8.0') >= 0 ? <String>[dartPath, '__deprecated_pub'] : <String>[join(File(dartPath).parent.path, 'pub')];
 +    final ProcessResult processResult = await globals.processManager.run(<Object>[...pubCommand, pubCommandGet], workingDirectory: globals.fs.currentDirectory.path);
-+    print('${processResult.stderr}');
++    if ((processResult.stderr as String).isNotEmpty) {
++      Logger.w('${processResult.stderr}', tag: _tag);
++    }
 +    return processResult.exitCode == processResultOK;
 +  }
 +
@@ -1910,24 +1907,24 @@ index 00000000000..4e34081cc4c
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/logger.dart
 @@ -0,0 +1,36 @@
-+///  日志打印工具
++/// 日志打印工具
 +class Logger {
 +  static void d(Object msg, {String? tag, bool silent = false}) {
-+    if(silent){
++    if (silent) {
 +      return;
 +    }
 +    print('AOPTools ====> ${tag == null ? '' : '[$tag] '}$msg');
 +  }
 +
 +  static void w(Object msg, {String? tag, bool silent = false}) {
-+    if(silent){
++    if (silent) {
 +      return;
 +    }
-+    print('AOPTools warn！====> ${tag == null ? '' : '[$tag] '}$msg');
++    print('AOPTools warn! ====> ${tag == null ? '' : '[$tag] '}$msg');
 +  }
 +
 +  static void e(Object msg, {String? tag, bool silent = false}) {
-+    if(silent){
++    if (silent) {
 +      return;
 +    }
 +    print('AOPTools error! ====> ${tag == null ? '' : '[$tag] '}$msg');
