@@ -232,7 +232,7 @@ new file mode 100644
 index 00000000000..7dc4ec34e26
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1031 @@
+@@ -0,0 +1,1041 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -338,6 +338,17 @@ index 00000000000..7dc4ec34e26
 +      // git clone
 +      if (aopRegistryProject.existsSync()) {
 +        aopRegistryProject.deleteSync(recursive: true);
++      }
++
++      // 确保父目录存在
++      final Directory parentDir = aopRegistryProject.parent;
++      if (!parentDir.existsSync()) {
++        try {
++          parentDir.createSync(recursive: true);
++          Logger.d('已创建 AOPRegistry 父目录: ${parentDir.path}', tag: _tag);
++        } catch (e) {
++          throw AOPError('无法创建AOPRegistry父目录: ${parentDir.path}, 请检查权限。错误: $e');
++        }
 +      }
 +
 +      _runGit(aopRegistryProject.parent.absolute.path, gitCloneMarket, '_fetchAOPRegistry git clone error');
