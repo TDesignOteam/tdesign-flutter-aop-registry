@@ -40,7 +40,7 @@ new file mode 100644
 index 00000000000..fada801863a
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,200 @@
+@@ -0,0 +1,204 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
