@@ -5,7 +5,7 @@ Subject: [PATCH] flutterPatch 1.1.3
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  184 +++
+ .../interceptor/impl/compile_interceptor.dart |  180 +++
  .../interceptor/impl/pub_interceptor.dart     | 1042 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   27 +
  .../interceptor/interface/interceptor.dart    |    5 +
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 ++
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1886 insertions(+), 1 deletion(-)
+ 10 files changed, 1892 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -40,7 +40,7 @@ new file mode 100644
 index 00000000000..b35cad46255
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,184 @@
+@@ -0,0 +1,180 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
