@@ -2,6 +2,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // 备用镜像
+        maven { url = uri("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") }
     }
 }
 
