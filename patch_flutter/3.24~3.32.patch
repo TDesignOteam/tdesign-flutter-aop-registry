@@ -250,7 +250,7 @@ new file mode 100644
 index 00000000000..6a40cc65ed5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1061 @@
+@@ -0,0 +1,1050 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -356,17 +356,6 @@ index 00000000000..6a40cc65ed5
 +      // git clone
 +      if (aopRegistryProject.existsSync()) {
 +        aopRegistryProject.deleteSync(recursive: true);
-+      }
-+
-+      // 确保父目录存在
-+      final Directory parentDir = aopRegistryProject.parent;
-+      if (!parentDir.existsSync()) {
-+        try {
-+          parentDir.createSync(recursive: true);
-+          Logger.d('已创建 AOPRegistry 父目录: ${parentDir.path}', tag: _tag);
-+        } catch (e) {
-+          throw AOPError('无法创建AOPRegistry父目录: ${parentDir.path}, 请检查权限。错误: $e');
-+        }
 +      }
 +
 +      _runGit(aopRegistryProject.parent.absolute.path, gitCloneMarket, '_fetchAOPRegistry git clone error');
@@ -1478,7 +1467,7 @@ new file mode 100644
 index 00000000000..14ee069b7b5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,415 @@
+@@ -0,0 +1,431 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1514,17 +1503,33 @@ index 00000000000..14ee069b7b5
 +
 +/// 获取AOPRegistry工程
 +Directory fetchAOPRegistry(String dartPath) {
++  Logger.d('fetchAOPRegistry 调试信息:', tag: _tag);
++  Logger.d('  dartPath: $dartPath', tag: _tag);
++  Logger.d('  flutterCacheDirName: $flutterCacheDirName', tag: _tag);
++  Logger.d('  dartPath.contains(flutterCacheDirName): ${dartPath.contains(flutterCacheDirName)}', tag: _tag);
++  Logger.d('  ProjectConfigExt.flutterRoot: ${ProjectConfigExt.flutterRoot}', tag: _tag);
++
++  Directory result;
 +  if (ProjectConfigExt.flutterRoot != null) {
-+    return Directory(join(ProjectConfigExt.flutterRoot!, flutterBinDirName, flutterCacheDirName, pluginAOPRegistry));
++    result = Directory(join(ProjectConfigExt.flutterRoot!, flutterBinDirName, flutterCacheDirName, pluginAOPRegistry));
++    Logger.d('  使用 flutterRoot 路径: ${result.path}', tag: _tag);
++  } else if (!dartPath.contains(flutterCacheDirName)) {
++    // 本地引擎调试
++    result = Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
++    Logger.d('  使用本地引擎调试路径: ${result.path}', tag: _tag);
++  } else {
++    // 寻找cache目录
++    final String splitPart = dartPath.split(flutterCacheDirName)[0];
++    Logger.d('  dartPath.split(flutterCacheDirName)[0]: $splitPart', tag: _tag);
++    result = Directory(join(splitPart, flutterCacheDirName, pluginAOPRegistry));
++    Logger.d('  使用 cache 目录路径: ${result.path}', tag: _tag);
 +  }
 +
-+  // 本地引擎调试
-+  if (!dartPath.contains(flutterCacheDirName)) {
-+    return Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
-+  }
++  Logger.d('  最终 aopRegistryProject 路径: ${result.path}', tag: _tag);
++  Logger.d('  父目录路径: ${result.parent.path}', tag: _tag);
++  Logger.d('  父目录是否存在: ${result.parent.existsSync()}', tag: _tag);
 +
-+  // 寻找cache目录
-+  return Directory(join(dartPath.split(flutterCacheDirName)[0], flutterCacheDirName, pluginAOPRegistry));
++  return result;
 +}
 +
 +/// 获取全部AOP工程
