@@ -1467,7 +1467,7 @@ new file mode 100644
 index 00000000000..5a656d555f9
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,423 @@
+@@ -0,0 +1,421 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
