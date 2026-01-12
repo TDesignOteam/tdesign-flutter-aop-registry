@@ -1427,7 +1427,7 @@ new file mode 100644
 index 00000000000..971fdf2e598
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,408 @@
+@@ -0,0 +1,401 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1467,17 +1467,13 @@ index 00000000000..971fdf2e598
 +  }
 +
 +  // 本地引擎调试
-+  if (!dartPath.contains(flutterCacheDirName)) {
++  final String normalizedPath = normalize(dartPath);
++  if (!normalizedPath.contains('/flutter/bin/cache')) {
 +    return Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
 +  }
 +
-+  // 寻找最后一个 /flutter/bin/cache 或 \flutter\bin\cache
-+  final int lastCacheIndex = dartPath.lastIndexOf(RegExp(r'[\/\\]flutter[\/\\]bin[\/\\]cache'));
-+  if (lastCacheIndex == -1) {
-+    // 回退方案：使用原有逻辑
-+    return Directory(join(dartPath.split(flutterCacheDirName)[0], flutterCacheDirName, pluginAOPRegistry));
-+  }
-+  return Directory(join(dartPath.substring(0, lastCacheIndex + 1), 'flutter', 'bin', 'cache', pluginAOPRegistry));
++  // 寻找 /flutter/bin/cache
++  return Directory(join(normalizedPath.split('/flutter/bin/cache')[0], 'flutter', 'bin', 'cache', pluginAOPRegistry));
 +}
 +
 +/// 获取全部AOP工程
