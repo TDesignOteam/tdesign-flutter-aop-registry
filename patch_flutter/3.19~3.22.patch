@@ -1467,7 +1467,7 @@ new file mode 100644
 index 00000000000..5a656d555f9
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,416 @@
+@@ -0,0 +1,424 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1512,8 +1512,13 @@ index 00000000000..5a656d555f9
 +    return Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
 +  }
 +
-+  // 寻找cache目录
-+  return Directory(join(dartPath.split(flutterCacheDirName)[0], flutterCacheDirName, pluginAOPRegistry));
++  // 寻找最后一个 /flutter/bin/cache 或 \flutter\bin\cache
++  final int lastCacheIndex = dartPath.lastIndexOf(RegExp(r'[\/\\]flutter[\/\\]bin[\/\\]cache'));
++  if (lastCacheIndex == -1) {
++    // 回退方案：使用原有逻辑
++    return Directory(join(dartPath.split(flutterCacheDirName)[0], flutterCacheDirName, pluginAOPRegistry));
++  }
++  return Directory(join(dartPath.substring(0, lastCacheIndex + 1), 'flutter', 'bin', 'cache', pluginAOPRegistry));
 +}
 +
 +/// 获取全部AOP工程
