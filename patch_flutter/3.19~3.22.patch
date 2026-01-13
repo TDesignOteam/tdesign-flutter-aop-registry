@@ -10,11 +10,11 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
  .../aop_tools/interceptor/utils/constant.dart |  110 ++
- .../interceptor/utils/package_utils.dart      |  416 +++++++
+ .../interceptor/utils/package_utils.dart      |  421 +++++++
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1917 insertions(+), 1 deletion(-)
+ 10 files changed, 1922 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -1467,7 +1467,7 @@ new file mode 100644
 index 00000000000..5a656d555f9
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,412 @@
+@@ -0,0 +1,417 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1507,6 +1507,11 @@ index 00000000000..5a656d555f9
 +    return Directory(join(ProjectConfigExt.flutterRoot!, flutterBinDirName, flutterCacheDirName, pluginAOPRegistry));
 +  }
 +
++  // 本地引擎调试
++  if (!dartPath.contains(flutterCacheDirName)) {
++    return Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
++  }
+
 +  // 寻找 /bin/cache
 +  final String normalizedPath = normalize(dartPath);
 +  return Directory(join(normalizedPath.split('/bin/cache')[0], 'bin', 'cache', pluginAOPRegistry));
