@@ -1467,7 +1467,7 @@ new file mode 100644
 index 00000000000..14ee069b7b5
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,416 @@
+@@ -0,0 +1,410 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1507,13 +1507,8 @@ index 00000000000..14ee069b7b5
 +    return Directory(join(ProjectConfigExt.flutterRoot!, flutterBinDirName, flutterCacheDirName, pluginAOPRegistry));
 +  }
 +
-+  // 本地引擎调试
-+  final String normalizedPath = normalize(dartPath);
-+  if (!normalizedPath.contains('/flutter/bin/cache')) {
-+    return Directory(join(normalize(File(dartPath).parent.absolute.path), pluginAOPRegistry));
-+  }
-+
 +  // 寻找 /flutter/bin/cache
++  final String normalizedPath = normalize(dartPath);
 +  return Directory(join(normalizedPath.split('/flutter/bin/cache')[0], 'flutter', 'bin', 'cache', pluginAOPRegistry));
 +}
 +
