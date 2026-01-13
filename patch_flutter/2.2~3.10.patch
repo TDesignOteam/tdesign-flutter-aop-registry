@@ -1468,7 +1468,7 @@ index 00000000000..971fdf2e598
 +
 +  // 寻找 /flutter/bin/cache
 +  final String normalizedPath = normalize(dartPath);
-+  return Directory(join(normalizedPath.split('/flutter/bin/cache')[0], 'flutter', 'bin', 'cache', pluginAOPRegistry));
++  return Directory(join(normalizedPath.split('/bin/cache')[0], 'bin', 'cache', pluginAOPRegistry));
 +}
 +
 +/// 获取全部AOP工程
