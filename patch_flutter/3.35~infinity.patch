@@ -1507,9 +1507,9 @@ index 00000000000..14ee069b7b5
 +    return Directory(join(ProjectConfigExt.flutterRoot!, flutterBinDirName, flutterCacheDirName, pluginAOPRegistry));
 +  }
 +
-+  // 寻找 /flutter/bin/cache
++  // 寻找 /bin/cache
 +  final String normalizedPath = normalize(dartPath);
-+  return Directory(join(normalizedPath.split('/flutter/bin/cache')[0], 'flutter', 'bin', 'cache', pluginAOPRegistry));
++  return Directory(join(normalizedPath.split('/bin/cache')[0], 'bin', 'cache', pluginAOPRegistry));
 +}
 +
 +/// 获取全部AOP工程
