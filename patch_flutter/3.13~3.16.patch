@@ -1,12 +1,12 @@
-From fd73a3d6539416b526aa311f9574e4829ea4cf5c Mon Sep 17 00:00:00 2001
+From 4e2e9e8dadc974ddb30cd4578da399c0f8cfcb8c Mon Sep 17 00:00:00 2001
 From: Skylerpfli <skylerpfli@tencent.com>
-Date: Mon, 8 Sep 2025 20:19:44 +0800
-Subject: [PATCH] flutterPatch 1.1.3
+Date: Fri, 16 Jan 2026 20:29:23 +0800
+Subject: [PATCH] 1
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
  .../interceptor/impl/compile_interceptor.dart |  186 +++
- .../interceptor/impl/pub_interceptor.dart     | 1031 +++++++++++++++++
+ .../interceptor/impl/pub_interceptor.dart     | 1029 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   27 +
  .../interceptor/interface/interceptor.dart    |    5 +
  .../aop_tools/interceptor/utils/constant.dart |  108 ++
@@ -14,7 +14,7 @@ Subject: [PATCH] flutterPatch 1.1.3
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 ++
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1877 insertions(+), 1 deletion(-)
+ 10 files changed, 1875 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -229,10 +229,10 @@ index 00000000000..b35cad46255
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
 new file mode 100644
-index 00000000000..9075ffd880e
+index 00000000000..2cf3c0d4e5a
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1031 @@
+@@ -0,0 +1,1029 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -444,7 +444,7 @@ index 00000000000..9075ffd880e
 +    final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path, ignoreError: true);
 +    for (final Package package in packageConfig.packages) {
 +      if (package.name == kernelPackage) {
-+        final Directory dartProject = Directory(Uri.decodeComponent(package.root.path)).parent.parent;
++        final Directory dartProject = Directory(Uri.decodeComponent(File.fromUri(package.root).path)).parent.parent;
 +        if (dartProject.existsSync() && checkDart(dartProject)) {
 +          return dartProject;
 +        }
@@ -467,7 +467,7 @@ index 00000000000..9075ffd880e
 +      final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path);
 +      for (final Package package in packageConfig.packages) {
 +        if (package.name == kernelPackage) {
-+          final Directory dartProject = Directory(Uri.decodeComponent(package.root.path)).parent.parent;
++          final Directory dartProject = Directory(Uri.decodeComponent(File.fromUri(package.root).path)).parent.parent;
 +          if (!dartProject.existsSync()) {
 +            throw AOPError('获取dart工程失败！');
 +          }
@@ -488,7 +488,7 @@ index 00000000000..9075ffd880e
 +
 +            // 打入补丁
 +            _runGit(dartProject.absolute.path, '$gitApplyPatch ${dartPatchFile.absolute.path}', '_fetchDartProject git apply patch error');
-+            _runGitByList(dartProject.absolute.path, <String>[dartShellFile.path, join(dartProject.path, kernelTargetPath)], '_fetchDartProject run dartShellFile error');
++            _runGitByList(dartProject.absolute.path, <String>[dartShellFile.path, join(dartProject.path, kernelTargetPath)], '_fetchDartProject run dartShellFile error', runInShell: true);
 +
 +            // 提交
 +            _runGit(dartProject.absolute.path, gitAdd, '_fetchDartProject git add 2 error');
@@ -517,8 +517,8 @@ index 00000000000..9075ffd880e
 +    return _runGitByList(projectPath, command.split(' '), errorTips, throwError: throwError);
 +  }
 +
-+  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true}) {
-+    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath);
++  bool _runGitByList(String projectPath, List<String> command, String errorTips, {bool throwError = true, bool runInShell = false}) {
++    final ProcessResult processResult = globals.processManager.runSync(command, workingDirectory: projectPath, runInShell: runInShell);
 +    if (processResult.exitCode == processResultOK) {
 +      return true;
 +    }
@@ -557,7 +557,7 @@ index 00000000000..9075ffd880e
 +      throw AOPError('未知错误，DEPS文件不存在: ${DEPSFile.path}');
 +    }
 +
-+    final String depsFileStr = DEPSFile.readAsStringSync(encoding: utf8);
++    final String depsFileStr = DEPSFile.readAsStringSync(encoding: utf8).replaceAll('\r\n', '\n');
 +
 +    // 变量定义的字符串，匹配如vars = {...}
 +    final Iterable<RegExpMatch> varsIterable = RegExp(r'(?<=\nvars = {\n)[\s\S]*?(?=\n})').allMatches(depsFileStr);
@@ -762,7 +762,7 @@ index 00000000000..9075ffd880e
 +            throw AOPError('未找到对应本地依赖，packageName: $packageName');
 +          }
 +          return YamlDependencies(<String, Map<String, String>>{
-+            packageName: <String, String>{YamlDependencies.yamlPath: package.root.path}
++            packageName: <String, String>{YamlDependencies.yamlPath: File.fromUri(package.root).path}
 +          }, type: DependenciesType.local);
 +        }));
 +      } on AOPError catch (e) {
@@ -864,13 +864,11 @@ index 00000000000..9075ffd880e
 +    return '$gitDartCommitPrefix Dart$dartVersion $dartConfigPatch$dartPatchFileMD5 $dartConfigShell$dartShellFileMD5';
 +  }
 +
-+  String _createProjectConfig(Map<String, Directory> aopProjects, String workPath) => '''
-+{
-+  "$projectConfigDart": "$dartVersion",
-+  "$projectConfigDir": "${absolute(workPath)}",
-+  "$projectConfigAopProjects": "${aopProjects.values.map((final Directory e) => normalize(e.absolute.path)).join(projectConfigSeparator)}"
-+}
-+''';
++  String _createProjectConfig(Map<String, Directory> aopProjects, String workPath) => jsonEncode({
++    projectConfigDart: dartVersion,
++    projectConfigDir: absolute(workPath),
++    projectConfigAopProjects: aopProjects.values.map((final Directory e) => normalize(e.absolute.path)).join(projectConfigSeparator)
++  });
 +}
 +
 +// yaml文件中AOP配置环境
@@ -1310,12 +1308,12 @@ index 00000000000..3d8a867b674
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 new file mode 100644
-index 00000000000..ca15eac2dd7
+index 00000000000..a129715be62
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 @@ -0,0 +1,108 @@
 +// 版本号
-+const String patchVersion = '1.1.3';
++const String patchVersion = '1.1.4';
 +const String startCommit = 'db7ef5bf9f';
 +
 +// yaml配置
@@ -1424,7 +1422,7 @@ index 00000000000..ca15eac2dd7
 +const String dart2jsSnapshot = 'dart2js.dart.snapshot';
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 new file mode 100644
-index 00000000000..5a656d555f9
+index 00000000000..3819d1f2d38
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 @@ -0,0 +1,416 @@
@@ -1449,7 +1447,7 @@ index 00000000000..5a656d555f9
 +Future<PackageConfig> parsePackages(String workingDirectory, {bool ignoreError = false}) async {
 +  final File packageFile = File(join(workingDirectory, packagesName));
 +  return loadPackageConfigUri(packageFile.absolute.uri, loader: (Uri uri) async {
-+    final File configFile = File(uri.path);
++    final File configFile = File.fromUri(uri);
 +    if (!configFile.existsSync()) {
 +      return null;
 +    }
@@ -1473,7 +1471,7 @@ index 00000000000..5a656d555f9
 +  }
 +
 +  // 寻找cache目录
-+  return Directory(join(dartPath.split(flutterCacheDirName)[0], flutterCacheDirName, pluginAOPRegistry));
++  return Directory(join(dartPath.substring(0, dartPath.lastIndexOf(flutterCacheDirName)), flutterCacheDirName, pluginAOPRegistry));
 +}
 +
 +/// 获取全部AOP工程
@@ -1541,8 +1539,8 @@ index 00000000000..5a656d555f9
 +
 +  // 判断三方依赖中是否配置有AOPRegistry
 +  packageConfig.packages.toList().forEach((final Package package) {
-+    final bool isMainProject = normalize(absolute(Uri.decodeComponent(package.root.path))) == workingDirectory;
-+    final File yamlFile = File(join(Uri.decodeComponent(package.root.path), yamlName));
++    final bool isMainProject = normalize(absolute(Uri.decodeComponent(File.fromUri(package.root).path))) == workingDirectory;
++    final File yamlFile = File(join(Uri.decodeComponent(File.fromUri(package.root).path), yamlName));
 +    if (!yamlFile.existsSync()) {
 +      Logger.e('未知错误，${package.name}中$yamlName不存在', tag: _tag, silent: !isPub);
 +      return;
@@ -1608,7 +1606,7 @@ index 00000000000..5a656d555f9
 +
 +                if (value[pathConfiguration] != null) {
 +                  final String path = value[pathConfiguration] as String;
-+                  final Directory aopDir = isRelative(path) ? Directory(normalize(absolute(Uri.decodeComponent(package.root.path), path))) : Directory(path);
++                  final Directory aopDir = isRelative(path) ? Directory(normalize(absolute(Uri.decodeComponent(File.fromUri(package.root).path), path))) : Directory(path);
 +                  if (_checkAOPProject(aopDir)) {
 +                    // 检查目标平台
 +                    final dynamic compileTarget = marketConfiguration[compileTargetConfiguration];

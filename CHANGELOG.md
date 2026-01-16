@@ -1,3 +1,10 @@
+## flutterPatch 1.1.4
+1. 修正cache目录寻找不对导致的问题
+2. 支持windows平台使用，需要shell运行环境
+
+## AOPRegistry 1.1.5
+1. 兼容Flutter 3.38及以上版本使用
+
 ## AOPRegistry 1.1.4
 1. 兼容Flutter 3.35及以上版本使用
 

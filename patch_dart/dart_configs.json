@@ -59,7 +59,9 @@
         "core",
         "i18n",
         "dartdev",
-        "ai"
+        "ai",
+        "pub",
+        "dart_data_home"
       ]
     }
   },

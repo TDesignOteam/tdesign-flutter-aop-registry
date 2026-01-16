@@ -1,20 +1,20 @@
-From babc046715fec354f9dd40e2f583f5dcadecef3e Mon Sep 17 00:00:00 2001
+From 158ca3244bc13426b33948ac38f1ac40cd181dd4 Mon Sep 17 00:00:00 2001
 From: Skylerpfli <skylerpfli@tencent.com>
-Date: Fri, 16 Jan 2026 20:27:47 +0800
-Subject: [PATCH] 2.2~3.10
+Date: Fri, 16 Jan 2026 21:07:50 +0800
+Subject: [PATCH] 1
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  186 +++
- .../interceptor/impl/pub_interceptor.dart     | 1029 +++++++++++++++++
- .../interceptor/interceptor_manager.dart      |   27 +
+ .../interceptor/impl/compile_interceptor.dart |  204 ++++
+ .../interceptor/impl/pub_interceptor.dart     | 1048 +++++++++++++++++
+ .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
- .../aop_tools/interceptor/utils/constant.dart |  108 ++
- .../interceptor/utils/package_utils.dart      |  400 +++++++
+ .../aop_tools/interceptor/utils/constant.dart |  110 ++
+ .../interceptor/utils/package_utils.dart      |  415 +++++++
  .../lib/src/aop_tools/logger.dart             |   36 +
- .../lib/src/aop_tools/process_decorator.dart  |   65 ++
+ .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1859 insertions(+), 1 deletion(-)
+ 10 files changed, 1914 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -25,10 +25,10 @@ Subject: [PATCH] 2.2~3.10
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/process_decorator.dart
 
 diff --git a/packages/flutter_tools/bin/flutter_tools.dart b/packages/flutter_tools/bin/flutter_tools.dart
-index 1cad0ded07d..dfed1dc1129 100644
+index 2caa134a351..eca6551ab60 100644
 --- a/packages/flutter_tools/bin/flutter_tools.dart
 +++ b/packages/flutter_tools/bin/flutter_tools.dart
-@@ -7,5 +7,6 @@
+@@ -5,5 +5,6 @@
  import 'package:flutter_tools/executable.dart' as executable;
  
  void main(List<String> args) {
@@ -37,10 +37,10 @@ index 1cad0ded07d..dfed1dc1129 100644
  }
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
 new file mode 100644
-index 00000000000..b35cad46255
+index 00000000000..fccbcf92972
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,186 @@
+@@ -0,0 +1,204 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
@@ -56,9 +56,11 @@ index 00000000000..b35cad46255
 +abstract class CompileInterceptor implements IInterceptor {
 +  static const String _tag = 'CompileInterceptor';
 +
-+  String getTargetSnapshot();
++  String getTargetSnapshot(); // 目标snapshot
 +
-+  String getStarterFileName();
++  String getStarterFileName(); // 在AOPRegistry下start文件名
++
++  bool isCompileAOTSnapshot(); // 是否是编译AOTSnapshot
 +
 +  @override
 +  bool isTargetCommand(List<Object> command) {
@@ -151,11 +153,10 @@ index 00000000000..b35cad46255
 +    }
 +
 +    final List<String> commands = <String>[
-+      command.first as String, // dart路径
-+      '--deterministic',
-+      '--packages=${join(marketDirectory.absolute.path, dartTool, packageConfig)}',
-+      '--snapshot=${snapshotFile.path}',
-+      '--snapshot-kind=kernel',
++      join(File(command.first as String).parent.absolute.path, 'dart'), // dart路径
++      'compile',
++      if (isCompileAOTSnapshot()) 'aot-snapshot' else 'kernel',
++      '--output=${snapshotFile.path}',
 +      starterFile.absolute.path,
 +      ProcessDecorator.skipInterceptCommand,
 +    ];
@@ -217,6 +218,20 @@ index 00000000000..b35cad46255
 +
 +  @override
 +  String getTargetSnapshot() => frontendServerSnapshot;
++
++  @override
++  bool isCompileAOTSnapshot() => false;
++}
++
++class AOTFrontendServerInterceptor extends CompileInterceptor {
++  @override
++  String getStarterFileName() => staterFileName;
++
++  @override
++  String getTargetSnapshot() => frontendServerAOTSnapshot;
++
++  @override
++  bool isCompileAOTSnapshot() => true;
 +}
 +
 +// web
@@ -226,13 +241,16 @@ index 00000000000..b35cad46255
 +
 +  @override
 +  String getTargetSnapshot() => dart2jsSnapshot;
++
++  @override
++  bool isCompileAOTSnapshot() => false;
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
 new file mode 100644
-index 00000000000..bafbda0a51a
+index 00000000000..64566881edc
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
-@@ -0,0 +1,1029 @@
+@@ -0,0 +1,1048 @@
 +import 'dart:convert';
 +import 'dart:io';
 +
@@ -628,6 +646,25 @@ index 00000000000..bafbda0a51a
 +      }
 +    });
 +
++    // 遍历文件夹，加入dart/third_party/pkg中依赖
++    final Directory thirdPkgDirectory = Directory(join(dartProject.path, thirdParty, dartPkg));
++    if (thirdPkgDirectory.existsSync()) {
++      thirdPkgDirectory.listSync().forEach((final FileSystemEntity element) {
++        if (Directory(join(element.path, libDir)).existsSync()) {
++          gitDependencies.add(YamlDependencies(<String, Map<String, Map<String, String>>>{
++            basename(element.path): <String, Map<String, String>>{
++              YamlDependencies.yamlGit: <String, String>{
++                YamlDependencies.yamlUrl: dartGitUrl,
++                YamlDependencies.yamlRef: dartVersion,
++                YamlDependencies.yamlPath: join(thirdParty, dartPkg, basename(element.path)),
++                YamlDependencies.yamlDartGenerate: dartVersion,
++              }
++            }
++          }));
++        }
++      });
++    }
++
 +    try {
 +      // 配置文件，见AOPRegistry工程dart_config.json文件
 +      final Map<dynamic, dynamic> depsChanged = (dartConfigs[dartConfigDeps]?[dartConfigDepsChanged] ?? <dynamic, dynamic>{}) as Map<dynamic, dynamic>;
@@ -636,13 +673,13 @@ index 00000000000..bafbda0a51a
 +      // 解析DEPS
 +      gitDeps.forEach((String e) {
 +        final List<String> keyValue = e.split('":');
-+        if (keyValue.length != 2) {
++        if (keyValue.length != 2 && keyValue.length != 3) {
 +          throw AOPError('未知错误，DEPS文件中依赖定义异常，依赖：$e, DPS: ${DEPSFile.path}');
 +        }
 +
 +        final List<YamlDependencies> result = <YamlDependencies>[];
 +        final String rawPackage = keyValue[0].replaceAll(' ', '').replaceAll('"', '').replaceAll('+', '').replaceAll('\n', '');
-+        final List<String> urlRefList = keyValue[1].replaceAll(' ', '').replaceAll('"', '').replaceAll('+', '').replaceAll('\n', '').split('@');
++        final List<String> urlRefList = keyValue.last.replaceAll(' ', '').replaceAll('"', '').replaceAll('+', '').replaceAll('\n', '').split('@');
 +        String url = urlRefList.first;
 +        if (url.endsWith('/')) {
 +          // 有时会在git链接后拼接/
@@ -808,7 +845,7 @@ index 00000000000..bafbda0a51a
 +${compareVersions(flutterVersion, '3.3.0') < 0 ? "" : '''
 +import 'package:args/args.dart';
 +import 'package:frontend_server/frontend_server.dart' as frontend_server;
-+''' /*flutter 3.3.0以上，debug不使用增量编译*/}  
++''' /*flutter 3.3.0以上，debug不使用增量编译*/}
 +${frontendServerAOPProjects.keys.map((final String package) => "import 'package:$package/starter.dart' as $package;").join('\n')}
 +
 +void main(List<String> args) async {
@@ -828,7 +865,7 @@ index 00000000000..bafbda0a51a
 +    }
 +  }
 +
-+''' /*flutter 3.3.0以上，debug不使用增量编译*/}  
++''' /*flutter 3.3.0以上，debug不使用增量编译*/}
 +${frontendServerAOPProjects.keys.map((final String package) => "  $package.start(args, '$frontendServerTarget', !args.last.endsWith('.dart'));").join('\n')}
 +
 +  // 执行原本的编译流程
@@ -1264,10 +1301,10 @@ index 00000000000..bafbda0a51a
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
 new file mode 100644
-index 00000000000..610f0cfa8b2
+index 00000000000..08ceaaa2a75
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,28 @@
 +import 'impl/compile_interceptor.dart';
 +import 'impl/pub_interceptor.dart';
 +
@@ -1279,6 +1316,7 @@ index 00000000000..610f0cfa8b2
 +  static List<IInterceptor> beforeExecuteInterceptors = <IInterceptor>[
 +    PubInterceptor(), // pub get/upgrade
 +    FrontendServerInterceptor(), // android/ios kernel compile
++    AOTFrontendServerInterceptor(),
 +    Dart2JsInterceptor(), // web compile
 +  ];
 +
@@ -1308,13 +1346,13 @@ index 00000000000..3d8a867b674
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 new file mode 100644
-index 00000000000..088c4f63e74
+index 00000000000..1685083f149
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,110 @@
 +// 版本号
 +const String patchVersion = '1.1.4';
-+const String startCommit = '4d9e56e694';
++const String startCommit = 'db7ef5bf9f';
 +
 +// yaml配置
 +const String yamlProjectName = 'name';
@@ -1364,6 +1402,7 @@ index 00000000000..088c4f63e74
 +const String dartConfigName = 'dart_configs.json';
 +const String dartDEPS = 'DEPS';
 +const String dartPkg = 'pkg';
++const String thirdParty = 'third_party';
 +const String projectFileName = 'project.json';
 +const String staterFileName = 'starter.dart';
 +const String dart2JsStaterFileName = 'starter_dart2js.dart';
@@ -1378,7 +1417,7 @@ index 00000000000..088c4f63e74
 +const String pubCommandUpgrade = 'upgrade';
 +const String pubHelp = '--help';
 +// dart插桩需要干预的具体节点
-+const String kernelTargetPath = './pkg/front_end/lib/src/fasta/kernel/kernel_target.dart';
++const String kernelTargetPath = './pkg/front_end/lib/src/kernel/kernel_target.dart';
 +
 +// dartConfig配置
 +const String dartConfigPatch = 'patchDart';
@@ -1419,13 +1458,14 @@ index 00000000000..088c4f63e74
 +
 +// compile目标snapshot
 +const String frontendServerSnapshot = 'frontend_server.dart.snapshot';
++const String frontendServerAOTSnapshot = 'frontend_server_aot.dart.snapshot';
 +const String dart2jsSnapshot = 'dart2js.dart.snapshot';
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 new file mode 100644
-index 00000000000..4824e2b265e
+index 00000000000..ea1f53d1476
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
-@@ -0,0 +1,400 @@
+@@ -0,0 +1,415 @@
 +import 'dart:convert';
 +import 'dart:io';
 +import 'dart:math';
@@ -1435,6 +1475,7 @@ index 00000000000..4824e2b265e
 +import 'package:path/path.dart';
 +import 'package:yaml/yaml.dart';
 +
++import '../../../cache.dart';
 +import '../../../globals.dart' as globals;
 +import '../../../version.dart';
 +import '../../logger.dart';
@@ -1619,7 +1660,13 @@ index 00000000000..4824e2b265e
 +                          return CompileTarget.dart2JsTarget;
 +                        }
 +
-+                        Logger.w('package:${package.name}，path: ${join(aopDir.path, yamlName)}，$compileTargetConfiguration配置异常，错误: $compileTarget, 可选: ${<CompileTarget>[CompileTarget.frontendServerTarget, CompileTarget.dart2JsTarget]}', tag: _tag, silent: !isPub);
++                        Logger.w(
++                            'package:${package.name}，path: ${join(aopDir.path, yamlName)}，$compileTargetConfiguration配置异常，错误: $compileTarget, 可选: ${<CompileTarget>[
++                              CompileTarget.frontendServerTarget,
++                              CompileTarget.dart2JsTarget
++                            ]}',
++                            tag: _tag,
++                            silent: !isPub);
 +                        return CompileTarget.undefined;
 +                      }).toList();
 +                      aopDir.tagAOPTarget(targets);
@@ -1700,6 +1747,8 @@ index 00000000000..4824e2b265e
 +
 +// 版本比对
 +int compareVersions(String version1, String version2) {
++  version1 = version1.split('-').first;
++  version2 = version2.split('-').first;
 +  if (version1 == versionInfinity || version2 == versionNegativeInfinity) {
 +    return 1;
 +  }
@@ -1728,12 +1777,18 @@ index 00000000000..4824e2b265e
 +
 +// flutter版本
 +String get flutterVersion => () {
-+      final GitTagVersion gitTagVersion = FlutterVersion().gitTagVersion;
++      final String frameworkRevision = (globals.processManager.runSync(
++        <String>['git', '-c', 'log.showSignature=false', 'log', '-n', '1', '--pretty=format:%H'],
++        workingDirectory: Cache.flutterRoot,
++      ).stdout as String)
++          .trim();
++
++      final GitTagVersion gitTagVersion = GitTagVersion.determine(globals.platform, git: globals.git, workingDirectory: Cache.flutterRoot, gitRef: frameworkRevision);
 +      return '${gitTagVersion.x}.${gitTagVersion.y}.${gitTagVersion.z}';
 +    }();
 +
 +// dart版本
-+String get dartVersion => globals.cache.dartSdkVersion;
++String get dartVersion => globals.cache.dartSdkBuild;
 +
 +// 插桩目标
 +enum CompileTarget {
@@ -1870,7 +1925,7 @@ index 00000000000..4e34081cc4c
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/process_decorator.dart b/packages/flutter_tools/lib/src/aop_tools/process_decorator.dart
 new file mode 100644
-index 00000000000..ae64b3aca61
+index 00000000000..258a17252c4
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/process_decorator.dart
 @@ -0,0 +1,65 @@
@@ -1913,7 +1968,7 @@ index 00000000000..ae64b3aca61
 +  }
 +
 +  @override
-+  Future<ProcessResult> run(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding stdoutEncoding = systemEncoding, Encoding stderrEncoding = systemEncoding}) {
++  Future<ProcessResult> run(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding? stdoutEncoding = systemEncoding, Encoding? stderrEncoding = systemEncoding}) {
 +    // 原本逻辑
 +    if (command.contains(skipInterceptCommand) && command.remove(skipInterceptCommand)) {
 +      return super.run(command, workingDirectory: workingDirectory, environment: environment, includeParentEnvironment: includeParentEnvironment, runInShell: runInShell, stdoutEncoding: stdoutEncoding, stderrEncoding: stderrEncoding);
@@ -1924,7 +1979,7 @@ index 00000000000..ae64b3aca61
 +  }
 +
 +  @override
-+  ProcessResult runSync(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding stdoutEncoding = systemEncoding, Encoding stderrEncoding = systemEncoding}) {
++  ProcessResult runSync(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding? stdoutEncoding = systemEncoding, Encoding? stderrEncoding = systemEncoding}) {
 +    // 暂不拦截同步函数
 +    command.contains(skipInterceptCommand) && command.remove(skipInterceptCommand);
 +    return super.runSync(command, workingDirectory: workingDirectory, environment: environment, includeParentEnvironment: includeParentEnvironment, runInShell: runInShell, stdoutEncoding: stdoutEncoding, stderrEncoding: stderrEncoding);
@@ -1934,13 +1989,13 @@ index 00000000000..ae64b3aca61
 +    return super.start(await interceptorManager.retrofitBeforeExecute(workingDirectory, environment, command), workingDirectory: workingDirectory, environment: environment, includeParentEnvironment: includeParentEnvironment, runInShell: runInShell, mode: mode);
 +  }
 +
-+  Future<ProcessResult> _interceptRunProcess(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding stdoutEncoding = systemEncoding, Encoding stderrEncoding = systemEncoding}) async {
++  Future<ProcessResult> _interceptRunProcess(List<Object> command, {String? workingDirectory, Map<String, String>? environment, bool includeParentEnvironment = true, bool runInShell = false, Encoding? stdoutEncoding = systemEncoding, Encoding? stderrEncoding = systemEncoding}) async {
 +    return super.run(await interceptorManager.retrofitBeforeExecute(workingDirectory, environment, command),
 +        workingDirectory: workingDirectory, environment: environment, includeParentEnvironment: includeParentEnvironment, runInShell: runInShell, stdoutEncoding: stdoutEncoding, stderrEncoding: stderrEncoding);
 +  }
 +}
 diff --git a/packages/flutter_tools/lib/src/base/context.dart b/packages/flutter_tools/lib/src/base/context.dart
-index 23882b62625..935adfadcc2 100644
+index 2a992542296..bc971156898 100644
 --- a/packages/flutter_tools/lib/src/base/context.dart
 +++ b/packages/flutter_tools/lib/src/base/context.dart
 @@ -1,7 +1,7 @@
@@ -1952,12 +2007,12 @@ index 23882b62625..935adfadcc2 100644
  import 'dart:async';
  import 'dart:collection';
  
-@@ -140,6 +140,7 @@ class AppContext {
+@@ -144,6 +144,7 @@ class AppContext {
      Map<Type, Generator>? fallbacks,
      ZoneSpecification? zoneSpecification,
    }) async {
 +    ProcessDecorator.injectProcessDecorator(fallbacks);
-     final AppContext child = AppContext._(
+     final child = AppContext._(
        this,
        name,
 -- 
