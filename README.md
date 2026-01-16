@@ -88,15 +88,18 @@ AOPRegistry:
 ### Q1：为什么会有AOPRegistry?
 切面编程是一种常用的编码手段，但在Flutter并没有得到有效的支持。业内能找到的更像是一种应对项目情况的特殊处理：AOP依赖的内容是固定的，对应Flutter版本是固定的。也因此我们在使用多个依赖AOP方案时将遇到难题————它们都有各自的特殊处理，在升级Flutter时也不得不对AOP环境进行适配。
 
-为什么不能一致的方案呢？像Android - gradle transfomer能力一样，提供基础的框架。在统一生态下，让AOP脱离Flutter版本，AOP开发、依赖使用AOP的插件像普通开发一样自然。
+为什么不能一致的方案呢？提供基础的框架，在统一生态下，让AOP脱离Flutter版本，AOP开发、依赖使用AOP的插件像普通开发一样自然。
 
-### Q2：遇到了不兼容的Flutter版本？
+### Q2：window平台如何使用
+windows平台需要安装shell执行环境，并在pub get时通过系统权限提示。
+
+### Q3：遇到了不兼容的Flutter版本？
 最低支持Flutter 2.2.0，更低未支持主要是考虑到版本太旧、适配非空安全较麻烦。<br/>
 最高见[changedLog](https://github.com/TDesignOteam/tdesign-flutter-aop-registry/blob/main/CHANGELOG.md)，不排除Flutter更新引起AOPRegistry异常的可能，请联系开发团队解决。
 
 所有Flutter版本集成方式是一致的。
 
-### Q3：AOPRegistry可选配置？
+### Q4：AOPRegistry可选配置？
 除上文提到的配置外，AOPRegistry有一些在主工程pubspec.yaml配置的可选项，用于满足自定义需求，配置后pub get/upgrade生效。
 
 * setPluginEnable：用于强制打开/关闭某个插件的AOP逻辑。
@@ -105,5 +108,5 @@ AOPRegistry:
 
 <img width="800" alt="image" src="https://github.com/user-attachments/assets/31d61a50-f299-4313-84f0-c6c5c5d82d44" />
 
-### Q4: 原理、和AspectD等方案的关系
+### Q5: 原理、和AspectD等方案的关系
 https://juejin.cn/post/7549000112987832362
