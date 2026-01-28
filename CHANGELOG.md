@@ -1,3 +1,6 @@
+## flutterPatch 1.1.5
+1. 修正依赖路径由于url编解码，可能导致错误的问题（patch 1.1.4引入）
+
 ## flutterPatch 1.1.4
 1. 修正cache目录寻找不对导致的问题
 2. 支持windows平台使用，需要shell运行环境

@@ -1,6 +1,6 @@
-From ff34f80b08388dd2808ece90418cf0513e59bfb8 Mon Sep 17 00:00:00 2001
+From 80d5f6b8ff7a69fc3f001092471acfb1547af829 Mon Sep 17 00:00:00 2001
 From: Skylerpfli <skylerpfli@tencent.com>
-Date: Fri, 16 Jan 2026 20:30:48 +0800
+Date: Wed, 28 Jan 2026 11:33:08 +0800
 Subject: [PATCH] 1
 
 ---
@@ -247,7 +247,7 @@ index 00000000000..fada801863a
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
 new file mode 100644
-index 00000000000..64566881edc
+index 00000000000..ba84d481c01
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
 @@ -0,0 +1,1048 @@
@@ -462,7 +462,7 @@ index 00000000000..64566881edc
 +    final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path, ignoreError: true);
 +    for (final Package package in packageConfig.packages) {
 +      if (package.name == kernelPackage) {
-+        final Directory dartProject = Directory(Uri.decodeComponent(File.fromUri(package.root).path)).parent.parent;
++        final Directory dartProject = Directory(File.fromUri(package.root).path).parent.parent;
 +        if (dartProject.existsSync() && checkDart(dartProject)) {
 +          return dartProject;
 +        }
@@ -485,7 +485,7 @@ index 00000000000..64566881edc
 +      final PackageConfig packageConfig = await parsePackages(aopPRegistryProject.path);
 +      for (final Package package in packageConfig.packages) {
 +        if (package.name == kernelPackage) {
-+          final Directory dartProject = Directory(Uri.decodeComponent(File.fromUri(package.root).path)).parent.parent;
++          final Directory dartProject = Directory(File.fromUri(package.root).path).parent.parent;
 +          if (!dartProject.existsSync()) {
 +            throw AOPError('获取dart工程失败！');
 +          }
@@ -1346,12 +1346,12 @@ index 00000000000..3d8a867b674
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 new file mode 100644
-index 00000000000..7f5388c580e
+index 00000000000..8003915425c
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 @@ -0,0 +1,110 @@
 +// 版本号
-+const String patchVersion = '1.1.4';
++const String patchVersion = '1.1.5';
 +const String startCommit = 'db7ef5bf9f';
 +
 +// yaml配置
@@ -1462,7 +1462,7 @@ index 00000000000..7f5388c580e
 +const String dart2jsSnapshot = 'dart2js.dart.snapshot';
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 new file mode 100644
-index 00000000000..3819d1f2d38
+index 00000000000..a8e60668f74
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 @@ -0,0 +1,416 @@
@@ -1579,8 +1579,8 @@ index 00000000000..3819d1f2d38
 +
 +  // 判断三方依赖中是否配置有AOPRegistry
 +  packageConfig.packages.toList().forEach((final Package package) {
-+    final bool isMainProject = normalize(absolute(Uri.decodeComponent(File.fromUri(package.root).path))) == workingDirectory;
-+    final File yamlFile = File(join(Uri.decodeComponent(File.fromUri(package.root).path), yamlName));
++    final bool isMainProject = normalize(absolute(File.fromUri(package.root).path)) == workingDirectory;
++    final File yamlFile = File(join(File.fromUri(package.root).path, yamlName));
 +    if (!yamlFile.existsSync()) {
 +      Logger.e('未知错误，${package.name}中$yamlName不存在', tag: _tag, silent: !isPub);
 +      return;
@@ -1646,7 +1646,7 @@ index 00000000000..3819d1f2d38
 +
 +                if (value[pathConfiguration] != null) {
 +                  final String path = value[pathConfiguration] as String;
-+                  final Directory aopDir = isRelative(path) ? Directory(normalize(absolute(Uri.decodeComponent(File.fromUri(package.root).path), path))) : Directory(path);
++                  final Directory aopDir = isRelative(path) ? Directory(normalize(absolute(File.fromUri(package.root).path, path))) : Directory(path);
 +                  if (_checkAOPProject(aopDir)) {
 +                    // 检查目标平台
 +                    final dynamic compileTarget = marketConfiguration[compileTargetConfiguration];
