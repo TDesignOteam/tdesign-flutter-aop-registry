@@ -1,3 +1,6 @@
+## AOPRegistry 1.1.6
+1. 兼容Flutter 3.41及以上版本使用
+
 ## flutterPatch 1.1.6
 1. 修正Flutter3.29开始 web release打包AOP不生效的问题
 
