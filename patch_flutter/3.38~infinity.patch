@@ -1,20 +1,20 @@
-From 1886373f025bb2f7a1da23a1893704b9ac97a22a Mon Sep 17 00:00:00 2001
+From ad59b240b40f23e2946ebfcbef0252f8ea2cb27e Mon Sep 17 00:00:00 2001
 From: Skylerpfli <skylerpfli@tencent.com>
-Date: Wed, 25 Feb 2026 10:45:21 +0800
-Subject: [PATCH] 00.1
+Date: Wed, 25 Feb 2026 17:00:49 +0800
+Subject: [PATCH] 01
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
- .../interceptor/impl/compile_interceptor.dart |  204 ++++
+ .../interceptor/impl/compile_interceptor.dart |  256 ++++
  .../interceptor/impl/pub_interceptor.dart     | 1048 +++++++++++++++++
  .../interceptor/interceptor_manager.dart      |   28 +
  .../interceptor/interface/interceptor.dart    |    5 +
- .../aop_tools/interceptor/utils/constant.dart |  110 ++
+ .../aop_tools/interceptor/utils/constant.dart |  112 ++
  .../interceptor/utils/package_utils.dart      |  415 +++++++
  .../lib/src/aop_tools/logger.dart             |   36 +
  .../lib/src/aop_tools/process_decorator.dart  |   65 +
  .../flutter_tools/lib/src/base/context.dart   |    3 +-
- 10 files changed, 1914 insertions(+), 1 deletion(-)
+ 10 files changed, 1968 insertions(+), 1 deletion(-)
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
  create mode 100644 packages/flutter_tools/lib/src/aop_tools/interceptor/interceptor_manager.dart
@@ -37,10 +37,10 @@ index 2caa134a351..eca6551ab60 100644
  }
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
 new file mode 100644
-index 00000000000..fccbcf92972
+index 00000000000..2501f0687ce
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
-@@ -0,0 +1,204 @@
+@@ -0,0 +1,256 @@
 +import 'dart:io';
 +
 +import 'package:path/path.dart';
@@ -60,37 +60,29 @@ index 00000000000..fccbcf92972
 +
 +  String getStarterFileName(); // 在AOPRegistry下start文件名
 +
++  String getTargetCommandStr() => getTargetSnapshot(); // 指令的标识片段
++
 +  bool isCompileAOTSnapshot(); // 是否是编译AOTSnapshot
 +
 +  @override
-+  bool isTargetCommand(List<Object> command) {
-+    for (final Object obj in command) {
-+      if (obj is String && obj.endsWith(getTargetSnapshot())) {
-+        return true;
-+      }
-+    }
-+    return false;
-+  }
++  bool isTargetCommand(List<Object> command) => command.join(' ').contains(getTargetCommandStr());
 +
 +  @override
-+  Future<List<Object>> handle(String? _, Map<String, String>? environment, List<Object> command) async {
++  Future<List<Object>> handle(
++    String? _,
++    Map<String, String>? environment,
++    List<Object> command,
++  ) async {
 +    Logger.emptyLog();
-+    int snapshotIndex = -1;
-+    for (int index = 0; index < command.length; index++) {
-+      final Object obj = command[index];
-+      if (obj is String && obj.endsWith(getTargetSnapshot())) {
-+        snapshotIndex = index;
-+      }
-+    }
-+
-+    if (snapshotIndex < 0) {
-+      return command;
-+    }
 +
 +    // 检查是否有插桩工程
 +    final Directory workingDirectory = globals.fs.currentDirectory;
 +
-+    final List<String> aopProjects = (await fetchAOPProject(workingDirectory.absolute.path, isPub: false)).values.map((final Directory e) => normalize(e.absolute.path)).toList();
++    final List<String> aopProjects =
++        (await fetchAOPProject(
++          workingDirectory.absolute.path,
++          isPub: false,
++        )).values.map((final Directory e) => normalize(e.absolute.path)).toList();
 +    if (aopProjects.isEmpty) {
 +      return command;
 +    }
@@ -116,27 +108,37 @@ index 00000000000..fccbcf92972
 +    Map<dynamic, dynamic>? projectRecord;
 +    List<String> recordAOPProjects;
 +    try {
-+      projectRecord = jsonDecode(projectFile.readAsStringSync(encoding: utf8)) as Map<dynamic, dynamic>;
-+      recordAOPProjects = (projectRecord[projectConfigAopProjects] as String).split(projectConfigSeparator);
++      projectRecord =
++          jsonDecode(projectFile.readAsStringSync(encoding: utf8)) as Map<dynamic, dynamic>;
++      recordAOPProjects = (projectRecord[projectConfigAopProjects] as String).split(
++        projectConfigSeparator,
++      );
 +    } on Exception catch (e) {
 +      throw AOPError('未知错误，工程配置解析异常，配置: ${projectFile.absolute.path}, error: $e');
 +    }
 +
-+    if (projectRecord[projectConfigDart] != dartVersion || projectRecord[projectConfigDir] != workingDirectory.absolute.path || !_compareList(aopProjects, recordAOPProjects)) {
++    if (projectRecord[projectConfigDart] != dartVersion ||
++        projectRecord[projectConfigDir] != workingDirectory.absolute.path ||
++        !_compareList(aopProjects, recordAOPProjects)) {
 +      // 尝试先pub get
 +      await runPubGet(command.first as String);
 +
 +      // 再重新读取文件
 +      try {
-+        projectRecord = jsonDecode(projectFile.readAsStringSync(encoding: utf8)) as Map<dynamic, dynamic>;
-+        recordAOPProjects = (projectRecord[projectConfigAopProjects] as String).split(projectConfigSeparator);
++        projectRecord =
++            jsonDecode(projectFile.readAsStringSync(encoding: utf8)) as Map<dynamic, dynamic>;
++        recordAOPProjects = (projectRecord[projectConfigAopProjects] as String).split(
++          projectConfigSeparator,
++        );
 +      } on Exception catch (e) {
 +        throw AOPError('未知错误，工程配置解析异常，配置: ${projectFile.absolute.path}, error: $e');
 +      }
 +    }
 +
 +    if (projectRecord[projectConfigDart] != dartVersion) {
-+      throw AOPError('dart版本错误，请在目标编译工程下pub get/upgrade后重试，old: ${projectRecord[projectConfigDart]}, now: $dartVersion');
++      throw AOPError(
++        'dart版本错误，请在目标编译工程下pub get/upgrade后重试，old: ${projectRecord[projectConfigDart]}, now: $dartVersion',
++      );
 +    }
 +
 +    if (projectRecord[projectConfigDir] != workingDirectory.absolute.path) {
@@ -163,10 +165,51 @@ index 00000000000..fccbcf92972
 +    final ProcessResult processResult = globals.processManager.runSync(commands);
 +
 +    if (processResult.exitCode != processResultOK || !snapshotFile.existsSync()) {
-+      throw AOPError('AOP snapshot编译失败，请检查插桩代码并在目标编译工程下尝试pub get/upgrade。error: ${processResult.stderr}');
++      throw AOPError(
++        'AOP snapshot编译失败，请检查插桩代码并在目标编译工程下尝试pub get/upgrade。error: ${processResult.stderr}',
++      );
++    }
++
++    int snapshotIndex = -1;
++    for (int index = 0; index < command.length; index++) {
++      final Object obj = command[index];
++      if (obj is String && obj.endsWith(getTargetSnapshot())) {
++        snapshotIndex = index;
++      }
++    }
++
++    // flutter 3.29开始，官方使用compile js而非snapshot启动，所以特殊适配
++    if (snapshotIndex < 0 && this is Dart2JsInterceptor) {
++      // 替换snapshot
++      final String aopCommandStr = command.join(' ').replaceAll(getTargetCommandStr(), snapshotFile.absolute.path);
++      final int snapshotIndex = aopCommandStr.lastIndexOf(snapshotFile.absolute.path);
++      if (snapshotIndex < 0) {
++        return command;
++      }
++
++      Logger.d('AOP ${getTargetSnapshot()} start: $aopCommandStr\n', tag: _tag);
++      // 热重启、recompile时也会走到此处，仅带main.dart入口的编译是可AOP调试的
++      if (command.last is String && (command.last as String).endsWith('.dart')) {
++        print('''
++---------------------------------
++AOP调试信息, Dart Command Line App
++
++* DartFile: ${starterFile.path}
++
++* Program arguments: ${aopCommandStr.substring(snapshotIndex + snapshotFile.absolute.path.length + 1)}
++
++* Working directory: ${normalize(workingDirectory.absolute.path)}
++
++''');
++      }
++
++      return aopCommandStr.split(' ');
 +    }
 +
 +    // 替换snapshot
++    if (snapshotIndex < 0) {
++      return command;
++    }
 +    command[snapshotIndex] = snapshotFile.absolute.path;
 +
 +    Logger.d('AOP ${getTargetSnapshot()} start: ${command.join(' ')}\n', tag: _tag);
@@ -191,8 +234,14 @@ index 00000000000..fccbcf92972
 +
 +  Future<bool> runPubGet(String dartPath) async {
 +    print('Running "flutter pub get" in ${globals.fs.currentDirectory.basename}...');
-+    final List<String> pubCommand = compareVersions(flutterVersion, '2.8.0') >= 0 ? <String>[dartPath, '__deprecated_pub'] : <String>[join(File(dartPath).parent.path, 'pub')];
-+    final ProcessResult processResult = await globals.processManager.run(<Object>[...pubCommand, pubCommandGet], workingDirectory: globals.fs.currentDirectory.path);
++    final List<String> pubCommand =
++        compareVersions(flutterVersion, '2.8.0') >= 0
++            ? <String>[dartPath, '__deprecated_pub']
++            : <String>[join(File(dartPath).parent.path, 'pub')];
++    final ProcessResult processResult = await globals.processManager.run(<Object>[
++      ...pubCommand,
++      pubCommandGet,
++    ], workingDirectory: globals.fs.currentDirectory.path);
 +    print('${processResult.stderr}');
 +    return processResult.exitCode == processResultOK;
 +  }
@@ -244,6 +293,9 @@ index 00000000000..fccbcf92972
 +
 +  @override
 +  bool isCompileAOTSnapshot() => false;
++
++  @override
++  String getTargetCommandStr() => compileJs; // 指令的标识片段
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/pub_interceptor.dart
 new file mode 100644
@@ -1346,12 +1398,12 @@ index 00000000000..3d8a867b674
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 new file mode 100644
-index 00000000000..fe10d85c4cd
+index 00000000000..3150d47edcd
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
-@@ -0,0 +1,110 @@
+@@ -0,0 +1,112 @@
 +// 版本号
-+const String patchVersion = '1.1.5';
++const String patchVersion = '1.1.6';
 +const String startCommit = 'db7ef5bf9f';
 +
 +// yaml配置
@@ -1460,6 +1512,8 @@ index 00000000000..fe10d85c4cd
 +const String frontendServerSnapshot = 'frontend_server.dart.snapshot';
 +const String frontendServerAOTSnapshot = 'frontend_server_aot.dart.snapshot';
 +const String dart2jsSnapshot = 'dart2js.dart.snapshot';
++
++const String compileJs = 'compile js';
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/package_utils.dart
 new file mode 100644
 index 00000000000..dc1876c7a0c

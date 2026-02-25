@@ -1,3 +1,6 @@
+## flutterPatch 1.1.6
+1. 修正Flutter3.29开始 web release打包AOP不生效的问题
+
 ## flutterPatch 1.1.5
 1. 修正依赖路径由于url编解码，可能导致错误的问题（patch 1.1.4引入）
 
