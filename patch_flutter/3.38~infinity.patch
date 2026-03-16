@@ -1,7 +1,7 @@
-From ad59b240b40f23e2946ebfcbef0252f8ea2cb27e Mon Sep 17 00:00:00 2001
-From: Skylerpfli <skylerpfli@tencent.com>
-Date: Wed, 25 Feb 2026 17:00:49 +0800
-Subject: [PATCH] 01
+From 6de9f9f6e14b2e527f47cdea95c0d6d4ccf9016a Mon Sep 17 00:00:00 2001
+From: skylerpfli <skylerpfli@tencent.com>
+Date: Mon, 16 Mar 2026 17:39:05 +0800
+Subject: [PATCH] 001
 
 ---
  packages/flutter_tools/bin/flutter_tools.dart |    1 +
@@ -37,7 +37,7 @@ index 2caa134a351..eca6551ab60 100644
  }
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
 new file mode 100644
-index 00000000000..2501f0687ce
+index 00000000000..d5d48d904a9
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/impl/compile_interceptor.dart
 @@ -0,0 +1,256 @@
@@ -162,7 +162,7 @@ index 00000000000..2501f0687ce
 +      starterFile.absolute.path,
 +      ProcessDecorator.skipInterceptCommand,
 +    ];
-+    final ProcessResult processResult = globals.processManager.runSync(commands);
++    final ProcessResult processResult = globals.processManager.runSync(commands, workingDirectory: marketDirectory.path);
 +
 +    if (processResult.exitCode != processResultOK || !snapshotFile.existsSync()) {
 +      throw AOPError(
@@ -1398,12 +1398,12 @@ index 00000000000..3d8a867b674
 +}
 diff --git a/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 new file mode 100644
-index 00000000000..3150d47edcd
+index 00000000000..caa8f1ac803
 --- /dev/null
 +++ b/packages/flutter_tools/lib/src/aop_tools/interceptor/utils/constant.dart
 @@ -0,0 +1,112 @@
 +// 版本号
-+const String patchVersion = '1.1.6';
++const String patchVersion = '1.1.7';
 +const String startCommit = 'db7ef5bf9f';
 +
 +// yaml配置
@@ -2070,5 +2070,5 @@ index 2a992542296..bc971156898 100644
        this,
        name,
 -- 
-2.37.1 (Apple Git-137.1)
+2.39.5 (Apple Git-154)
 
