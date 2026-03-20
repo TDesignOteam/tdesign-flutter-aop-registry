@@ -51,7 +51,9 @@ jobs:
           cache: true
           aop-registry: true
           aop-project-path: ./tdesign-flutter/tdesign-component/example
+          aop-repo: ${{ github.repositoryUrl }}
           aop-repo-branch: ${{ github.head_ref || github.ref }}
+          
 
       - name: tdesign-adaptation
         run: sh ./tdesign-flutter/tdesign-component/init.sh
