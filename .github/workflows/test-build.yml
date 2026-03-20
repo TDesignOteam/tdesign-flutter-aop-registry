@@ -1,0 +1,69 @@
+name: test-build
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
+  push:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - apk
+          - ios
+          - web
+        flutter-version:
+          - 3.16.9
+          - 3.32.0
+          - 3.x
+        include:
+          - platform: apk
+            os: ubuntu-latest
+            build: flutter build apk -t ./lib/main.dart --release
+          - platform: ios
+            os: macos-latest
+            build: flutter build ios -t ./lib/main.dart --no-codesign --release
+          - platform: web
+            os: ubuntu-latest
+            build: flutter build web -t ./lib/main.dart --release
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: tdesign-flutter
+
+      - name: Setup Flutter
+        uses: TDesignOteam/workflows/actions/setup-flutter@main
+        with:
+          flutter-version: ${{ matrix.flutter-version }}
+          cache: true
+          aop-registry: true
+          aop-project-path: ./tdesign-flutter/tdesign-component/example
+          aop-repo-branch: ${{ github.head_ref || github.ref }}
+
+      - name: tdesign-adaptation
+        run: sh ./tdesign-flutter/tdesign-component/init.sh
+
+      - name: generate api md
+        working-directory: ./tdesign-flutter/tdesign-component
+        run: sh ./demo_tool/all_build.sh
+
+      - name: flutter pub get
+        working-directory: ./tdesign-flutter/tdesign-component/example
+        run: flutter pub get ${{ runner.debug && '--verbose' || '' }}
+
+      - name: flutter build
+        working-directory: ./tdesign-flutter/tdesign-component/example
+        run: ${{ matrix.build }} ${{ runner.debug && '--verbose' || '' }}
