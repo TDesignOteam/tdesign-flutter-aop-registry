@@ -43,6 +43,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           repository: Tencent/tdesign-flutter
+          path: tdesign-flutter
 
       - name: Setup Flutter
         uses: TDesignOteam/workflows/actions/setup-flutter@main
