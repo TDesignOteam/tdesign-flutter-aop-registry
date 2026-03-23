@@ -52,7 +52,7 @@ jobs:
           cache: true
           aop-registry: true
           aop-project-path: ./tdesign-flutter/tdesign-component/example
-          aop-repo: https://github.com/${{ github.repository }}.git
+          aop-repo: ${{ github.repository }}
           aop-repo-branch: ${{ github.head_ref || github.ref }}
           
 
