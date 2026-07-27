@@ -1,3 +1,6 @@
+## AOPRegistry 1.1.7
+1. 兼容Flutter 3.41 高版本使用
+
 ## flutterPatch 1.1.7
 1. 修正Flutter 3.38及以上版本，编译时可能抛出`'dart compile' does not support build hooks, use 'dart build' instead.`的问题
 

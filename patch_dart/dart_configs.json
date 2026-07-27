@@ -1,5 +1,78 @@
 {
-  "3.7.0~infinity": {
+  "3.11.0~infinity": {
+    "patchDart": "./patch_dart/2.13~infinity.patch",
+    "shell": "./patch_dart/shell/3.7~infinity.sh",
+    "deps": {
+      "gitDepsChanged": {
+        "https://dart.googlesource.com/native.git": [
+          {
+            "package": "record_use",
+            "path": "pkgs/record_use"
+          }
+        ],
+        "https://dart.googlesource.com/shelf.git": [
+          {
+            "package": "shelf",
+            "path": "pkgs/shelf"
+          }
+        ],
+        "https://dart.googlesource.com/http.git": [
+          {
+            "package": "http",
+            "path": "pkgs/http"
+          }
+        ],
+        "https://dart.googlesource.com/external/github.com/google/file.dart": [
+          {
+            "package": "file",
+            "path": "packages/file"
+          }
+        ],
+        "https://dart.googlesource.com/test.git": [
+          {
+            "package": "test",
+            "path": "pkgs/test"
+          },
+          {
+            "package": "test_api",
+            "path": "pkgs/test_api"
+          },
+          {
+            "package": "test_core",
+            "path": "pkgs/test_core"
+          }
+        ],
+        "https://dart.googlesource.com/protobuf.git": [
+          {
+            "package": "protobuf",
+            "path": "protobuf"
+          }
+        ]
+      },
+      "depsExcludes": [
+        "web_components",
+        "webdev",
+        "webdriver",
+        "webkit_inspection_protocol",
+        "web_socket_channel",
+        "tools",
+        "ecosystem",
+        "leak_tracker",
+        "native",
+        "material_color_utilities",
+        "dart_style",
+        "web",
+        "core",
+        "i18n",
+        "dartdev",
+        "ai",
+        "pub",
+        "dart_data_home",
+        "perf_witness"
+      ]
+    }
+  },
+  "3.7.0~3.11.0": {
     "patchDart": "./patch_dart/2.13~infinity.patch",
     "shell": "./patch_dart/shell/3.7~infinity.sh",
     "deps": {
