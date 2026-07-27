@@ -33,6 +33,8 @@ class NodeUtils {
           enabled = true;
           break;
         }
+      } else if (annotation is RedirectingFactoryInvocation){
+        return checkIfClassEnable([annotation.expression]);
       }
     }
     return enabled;
