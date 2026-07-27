@@ -1,3 +1,6 @@
+## AOPRegistry 1.1.8
+1. 兼容Flutter 3.44（Dart 3.12）高版本使用
+
 ## AOPRegistry 1.1.7
 1. 兼容Flutter 3.41 高版本使用
 

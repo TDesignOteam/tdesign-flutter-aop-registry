@@ -67,8 +67,7 @@
         "dartdev",
         "ai",
         "pub",
-        "dart_data_home",
-        "perf_witness"
+        "dart_data_home"
       ]
     }
   },
