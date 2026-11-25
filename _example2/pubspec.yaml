@@ -95,4 +95,4 @@ AOPRegistry:
     negativeInfinity~2.2.0:
       unsupportedTips: 请在flutter 2.2.+运行项目工程 # 命中该flutter版本时，插件不支持可以打印提示
     3.0.0~infinity:
-      path: ../_example/aop_tools # 插件/项目自定义插桩目录
+      path: ./aop_tools # 插件/项目自定义插桩目录

@@ -4,73 +4,81 @@ packages:
   _fe_analyzer_shared:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/_fe_analyzer_shared/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/_fe_analyzer_shared/"
       relative: false
     source: path
-    version: "92.0.0"
+    version: "104.0.0"
   _js_interop_checks:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/_js_interop_checks/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/_js_interop_checks/"
       relative: false
     source: path
     version: "0.0.0"
   analysis_server:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analysis_server/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analysis_server/"
       relative: false
     source: path
     version: "0.0.0"
   analysis_server_client:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analysis_server_client/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analysis_server_client/"
       relative: false
     source: path
     version: "0.0.0"
   analysis_server_plugin:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analysis_server_plugin/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analysis_server_plugin/"
       relative: false
     source: path
-    version: "0.3.5-dev"
+    version: "0.3.20-dev"
   analyzer:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analyzer/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analyzer/"
       relative: false
     source: path
-    version: "10.0.0-dev"
+    version: "14.1.0-dev"
   analyzer_cli:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analyzer_cli/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analyzer_cli/"
       relative: false
     source: path
     version: "0.0.0"
   analyzer_plugin:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analyzer_plugin/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analyzer_plugin/"
       relative: false
     source: path
-    version: "0.14.0-dev"
+    version: "0.14.14-dev"
   analyzer_testing:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analyzer_testing/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analyzer_testing/"
       relative: false
     source: path
-    version: "0.1.8-dev"
+    version: "0.3.4-dev"
   analyzer_utilities:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/analyzer_utilities/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/analyzer_utilities/"
       relative: false
     source: path
     version: "0.0.0"
+  api_summary:
+    dependency: transitive
+    description:
+      name: api_summary
+      sha256: a594587ae2480f934ea9a1a29ea9aadf94164c0b6a0f775cfc0467b7bb827440
+      url: "https://mirrors.tencent.com/dart-pub/"
+    source: hosted
+    version: "1.2.0"
   args:
     dependency: transitive
     description:
@@ -90,7 +98,7 @@ packages:
   async_helper:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/async_helper/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/async_helper/"
       relative: false
     source: path
     version: "0.0.0"
@@ -105,7 +113,7 @@ packages:
   bisect_dart:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/bisect_dart/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/bisect_dart/"
       relative: false
     source: path
     version: "0.0.0"
@@ -128,14 +136,14 @@ packages:
   build_integration:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/build_integration/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/build_integration/"
       relative: false
     source: path
     version: "0.0.0"
   cfg:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/cfg/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/cfg/"
       relative: false
     source: path
     version: "0.0.0"
@@ -147,6 +155,14 @@ packages:
       url: "https://mirrors.tencent.com/dart-pub/"
     source: hosted
     version: "0.2.0"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      sha256: da2a2b22f919995eb427edab07725e2be0b1281ef26770f6ce3a213355565262
+      url: "https://mirrors.tencent.com/dart-pub/"
+    source: hosted
+    version: "0.6.1"
   clock:
     dependency: transitive
     description:
@@ -174,7 +190,7 @@ packages:
   compiler:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/compiler/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/compiler/"
       relative: false
     source: path
     version: "0.0.0"
@@ -213,63 +229,85 @@ packages:
   dap:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/third_party/pkg/dap/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/third_party/pkg/dap/"
       relative: false
     source: path
     version: "1.5.0-wip"
   dart2bytecode:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2bytecode/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2bytecode/"
       relative: false
     source: path
     version: "0.0.0"
   dart2js_info:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2js_info/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2js_info/"
       relative: false
     source: path
     version: "0.0.0"
   dart2js_runtime_metrics:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2js_runtime_metrics/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2js_runtime_metrics/"
       relative: false
     source: path
     version: "0.2.0"
   dart2js_tools:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2js_tools/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2js_tools/"
       relative: false
     source: path
     version: "0.0.0"
   dart2native:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2native/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2native/"
       relative: false
     source: path
     version: "0.0.0"
   dart2wasm:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart2wasm/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart2wasm/"
       relative: false
     source: path
     version: "0.0.0"
+  dart_data_home:
+    dependency: transitive
+    description:
+      name: dart_data_home
+      sha256: "61b80017c4131cd3d52e8e89ecba4208c2f625cb80307c8d468d23680bc572be"
+      url: "https://mirrors.tencent.com/dart-pub/"
+    source: hosted
+    version: "0.1.1"
   dart_internal:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart_internal/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart_internal/"
       relative: false
     source: path
-    version: "0.2.17"
+    version: "0.2.19"
+  dart_runtime_service:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart_runtime_service/"
+      relative: false
+    source: path
+    version: "0.0.0"
+  dart_runtime_service_vm:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart_runtime_service_vm/"
+      relative: false
+    source: path
+    version: "0.0.0"
   dart_service_protocol_shared:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dart_service_protocol_shared/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dart_service_protocol_shared/"
       relative: false
     source: path
     version: "0.0.3"
@@ -284,28 +322,35 @@ packages:
   dartdoc:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/dartdoc-6d1aa6f5045c33d3723aba05e3e0dc1403b763c0/"
+      path: "/Users/skylerpfli/.pub-cache/git/dartdoc-1d56f263955f329b6701d8f84f069eb0aef353a4/"
       relative: false
     source: path
-    version: "9.0.0"
+    version: "9.0.6-wip"
+  dartpad:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dartpad/"
+      relative: false
+    source: path
+    version: "0.0.3"
   dds:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dds/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dds/"
       relative: false
     source: path
-    version: "5.2.0-wip"
+    version: "5.4.0-wip"
   dds_service_extensions:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dds_service_extensions/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dds_service_extensions/"
       relative: false
     source: path
     version: "2.1.0"
   dev_compiler:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dev_compiler/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dev_compiler/"
       relative: false
     source: path
     version: "0.0.0"
@@ -313,35 +358,49 @@ packages:
     dependency: transitive
     description:
       name: devtools_shared
-      sha256: "2daf7a9fba6a470668b26ecbd04200f7bf992aad81a2c31d12457c7791419dea"
+      sha256: "13df2c17d5f21dd7c92d08145386d45e1153364c04e531e994afb0ee7b67554b"
       url: "https://mirrors.tencent.com/dart-pub/"
     source: hosted
-    version: "12.1.0"
+    version: "13.1.0"
   dtd:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dtd/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dtd/"
       relative: false
     source: path
     version: "4.0.0"
   dtd_impl:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dtd_impl/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dtd_impl/"
+      relative: false
+    source: path
+    version: "0.0.0"
+  dwds:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dwds/"
+      relative: false
+    source: path
+    version: "27.1.2"
+  dwds_test_common:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dwds_test_common/"
       relative: false
     source: path
     version: "0.0.0"
   dynamic_modules:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/dynamic_modules/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/dynamic_modules/"
       relative: false
     source: path
     version: "0.0.0"
   expect:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/expect/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/expect/"
       relative: false
     source: path
     version: "0.0.0"
@@ -380,21 +439,21 @@ packages:
   front_end:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/front_end/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/front_end/"
       relative: false
     source: path
     version: "0.0.0"
   frontend_server:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/frontend_server/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/frontend_server/"
       relative: false
     source: path
     version: "0.0.0"
   frontend_server_client:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/frontend_server_client/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/frontend_server_client/"
       relative: false
     source: path
     version: "4.0.1-wip"
@@ -409,7 +468,7 @@ packages:
   heap_snapshot:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/heap_snapshot/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/heap_snapshot/"
       relative: false
     source: path
     version: "0.0.0"
@@ -432,7 +491,7 @@ packages:
   http:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/http-a22386e9c390290c916d1c53a3d3c1447ec120ce/pkgs/http/"
+      path: "/Users/skylerpfli/.pub-cache/git/http-5d94ef52582867e077bf41c3fa20fb8b1d1d834e/pkgs/http/"
       relative: false
     source: path
     version: "1.6.1-wip"
@@ -463,28 +522,28 @@ packages:
   js:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/js/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/js/"
       relative: false
     source: path
     version: "0.7.2"
   js_ast:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/js_ast/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/js_ast/"
       relative: false
     source: path
     version: "0.0.0"
   js_runtime:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/js_runtime/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/js_runtime/"
       relative: false
     source: path
     version: "0.0.0"
   js_shared:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/js_shared/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/js_shared/"
       relative: false
     source: path
     version: "0.0.0"
@@ -499,21 +558,21 @@ packages:
   kernel:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/kernel/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/kernel/"
       relative: false
     source: path
     version: "0.0.0"
   language_server_protocol:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/third_party/pkg/language_server_protocol/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/third_party/pkg/language_server_protocol/"
       relative: false
     source: path
     version: "0.0.0"
   linter:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/linter/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/linter/"
       relative: false
     source: path
     version: "0.0.0"
@@ -552,10 +611,10 @@ packages:
   meta:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/meta/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/meta/"
       relative: false
     source: path
-    version: "1.18.0-dev"
+    version: "1.18.3"
   mime:
     dependency: transitive
     description:
@@ -567,42 +626,42 @@ packages:
   mmap:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/mmap/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/mmap/"
       relative: false
     source: path
     version: "0.0.0"
   modular_test:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/modular_test/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/modular_test/"
       relative: false
     source: path
     version: "0.0.0"
   native_compiler:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/native_compiler/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/native_compiler/"
       relative: false
     source: path
     version: "0.0.0"
   native_stack_traces:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/native_stack_traces/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/native_stack_traces/"
       relative: false
     source: path
     version: "0.6.1"
   node_preamble:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/node_preamble/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/node_preamble/"
       relative: false
     source: path
     version: "0.0.0"
   observatory:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/observatory/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/observatory/"
       relative: false
     source: path
     version: "0.0.0"
@@ -622,6 +681,13 @@ packages:
       url: "https://mirrors.tencent.com/dart-pub/"
     source: hosted
     version: "1.9.1"
+  perf_witness:
+    dependency: "direct overridden"
+    description:
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/perf_witness/"
+      relative: false
+    source: path
+    version: "0.0.1"
   platform:
     dependency: transitive
     description:
@@ -641,7 +707,7 @@ packages:
   protobuf:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/protobuf-9e30258e0aa6a6430ee36c84b75308a9702fde42/protobuf/"
+      path: "/Users/skylerpfli/.pub-cache/git/protobuf-84079e8b8531309e06ba7276b1c28bdca9210ad6/protobuf/"
       relative: false
     source: path
     version: "6.0.0"
@@ -656,28 +722,28 @@ packages:
   record_use:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/native-9a11537944f2ee295df46104624fb714c3dd7741/pkgs/record_use/"
+      path: "/Users/skylerpfli/.pub-cache/git/native-d51c53334486af69435b0b45c4bdfe303a830170/pkgs/record_use/"
       relative: false
     source: path
-    version: "0.5.0-wip"
+    version: "0.6.1-wip"
   reload_test:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/reload_test/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/reload_test/"
       relative: false
     source: path
     version: "0.0.0"
   scrape:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/scrape/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/scrape/"
       relative: false
     source: path
     version: "0.0.0"
   shelf:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/shelf-dd830a0338b31bee92fe7ebc20b9bb963403b6b0/pkgs/shelf/"
+      path: "/Users/skylerpfli/.pub-cache/git/shelf-71248e727317930f244c4b4535e9733bcfc66677/pkgs/shelf/"
       relative: false
     source: path
     version: "1.4.3-wip"
@@ -716,14 +782,14 @@ packages:
   shell_arg_splitter:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/shell_arg_splitter/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/shell_arg_splitter/"
       relative: false
     source: path
     version: "0.0.0"
   smith:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/smith/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/smith/"
       relative: false
     source: path
     version: "0.0.0"
@@ -754,7 +820,7 @@ packages:
   sourcemap_testing:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/sourcemap_testing/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/sourcemap_testing/"
       relative: false
     source: path
     version: "0.0.0"
@@ -777,7 +843,7 @@ packages:
   status_file:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/status_file/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/status_file/"
       relative: false
     source: path
     version: "0.0.0"
@@ -814,7 +880,7 @@ packages:
   telemetry:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/telemetry/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/telemetry/"
       relative: false
     source: path
     version: "0.0.0"
@@ -829,35 +895,35 @@ packages:
   test:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/test-f95c0f5c10fa9af35014117cb00ec17d2a117265/pkgs/test/"
+      path: "/Users/skylerpfli/.pub-cache/git/test-bd92e633e7f05edc3301865bdc00d1ae181cb1f1/pkgs/test/"
       relative: false
     source: path
-    version: "1.29.0-wip"
+    version: "1.31.2"
   test_api:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/test-f95c0f5c10fa9af35014117cb00ec17d2a117265/pkgs/test_api/"
+      path: "/Users/skylerpfli/.pub-cache/git/test-bd92e633e7f05edc3301865bdc00d1ae181cb1f1/pkgs/test_api/"
       relative: false
     source: path
-    version: "0.7.8"
+    version: "0.7.13"
   test_core:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/test-f95c0f5c10fa9af35014117cb00ec17d2a117265/pkgs/test_core/"
+      path: "/Users/skylerpfli/.pub-cache/git/test-bd92e633e7f05edc3301865bdc00d1ae181cb1f1/pkgs/test_core/"
       relative: false
     source: path
-    version: "0.6.15-wip"
+    version: "0.6.19"
   test_runner:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/test_runner/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/test_runner/"
       relative: false
     source: path
     version: "0.0.0"
   testing:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/testing/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/testing/"
       relative: false
     source: path
     version: "0.0.0"
@@ -880,49 +946,49 @@ packages:
   vector_math:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/vector_math.dart-70a9a2cb610d040b247f3ca2cd70a94c1c6f6f23/"
+      path: "/Users/skylerpfli/.pub-cache/git/vector_math.dart-cf3b5db7340d317dd3489e5a35434b408020a852/"
       relative: false
     source: path
-    version: "2.3.0-wip"
+    version: "2.4.0-wip"
   vm:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/vm/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/vm/"
       relative: false
     source: path
     version: "0.0.0"
   vm_service:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/vm_service/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/vm_service/"
       relative: false
     source: path
-    version: "15.1.0"
+    version: "15.2.0"
   vm_service_interface:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/vm_service_interface/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/vm_service_interface/"
       relative: false
     source: path
-    version: "2.0.1"
+    version: "2.0.2-wip"
   vm_service_protos:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/vm_service_protos/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/vm_service_protos/"
       relative: false
     source: path
     version: "2.0.1"
   vm_snapshot_analysis:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/vm_snapshot_analysis/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/vm_snapshot_analysis/"
       relative: false
     source: path
     version: "0.7.6"
   wasm_builder:
     dependency: "direct overridden"
     description:
-      path: "/Users/skylerpfli/.pub-cache/git/sdk-c70f78e7d682c158c15ca0c26c729b3ccb932284/pkg/wasm_builder/"
+      path: "/Users/skylerpfli/.pub-cache/git/sdk-416e33b0ffaef062a60ec966bb8c82ed2b83f128/pkg/wasm_builder/"
       relative: false
     source: path
     version: "0.0.0"
@@ -991,4 +1057,4 @@ packages:
     source: hosted
     version: "2.2.4"
 sdks:
-  dart: ">=3.11.0 <4.0.0"
+  dart: ">=3.12.0 <4.0.0"
